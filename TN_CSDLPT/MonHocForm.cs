@@ -156,7 +156,7 @@ namespace TN_CSDLPT
                 vitri = bdsMONHOC.Position;
                 this.panelNhapLieu.Enabled = true;
                 kiemtraThemMoi = true;
-                this.mONHOCGridControl.Enabled = false;
+                this.gcMonHoc.Enabled = false;
                 // step 2 : nhay xuong cuoi them 1 dong moi
                 bdsMONHOC.AddNew();
 
@@ -271,9 +271,7 @@ namespace TN_CSDLPT
                 DialogResult dr = MessageBox.Show("Bạn có chắc ghi dữ liệu vào cơ sở dữ liệu ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (dr == DialogResult.OK)
                 {
-                    btnTHEM.Enabled = btnXOA.Enabled = btnHOANTAC.Enabled = btnLAMMOI.Enabled = true;
-                    btnGHI.Enabled = true;
-                    txtMaMonHoc.Enabled = txtTenMonHoc.Enabled = true;
+                    
                     string caulenhHoanTac = "";
                     // TRƯỚC KHI NHẤN NÚT GHI LÀ NÚT THÊM
                     if (kiemtraThemMoi == true)
@@ -291,6 +289,11 @@ namespace TN_CSDLPT
                     this.mONHOCTableAdapter.Update(this.DataSet.MONHOC);
                     
                     MessageBox.Show("Ghi thành công", "Thông báo", MessageBoxButtons.OK);
+                    btnTHEM.Enabled = btnXOA.Enabled = btnHOANTAC.Enabled = btnLAMMOI.Enabled = true;
+                    btnGHI.Enabled = true;
+                    btnTHOAT.Enabled = true;
+                    txtMaMonHoc.Enabled = txtTenMonHoc.Enabled = true;
+                    this.gcMonHoc.Enabled = true;
 
                 }
 
@@ -375,6 +378,11 @@ namespace TN_CSDLPT
 
                     // lưu câu lệnh để hoàn tác
                     undo.Push(cautruyvanHoanTac);
+                    btnTHEM.Enabled = btnXOA.Enabled = btnHOANTAC.Enabled = btnLAMMOI.Enabled = true;
+                    btnGHI.Enabled = true;
+                    btnTHOAT.Enabled = true;
+                    txtMaMonHoc.Enabled = txtTenMonHoc.Enabled = true;
+                    this.gcMonHoc.Enabled = true;
 
                 }
                 catch (Exception ex)
@@ -441,6 +449,6 @@ namespace TN_CSDLPT
         private void btnTHOAT_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             this.Close();
-        }
+        }   
     }
 }

@@ -94,36 +94,43 @@ namespace TN_CSDLPT
 
             if(radioButtonSinhVien.Checked)
             {
-                string caulenh = "SELECT HO, TEN ,NGAYSINH, DIACHI, MALOP, PASSWORD FROM DBO.SINHVIEN WHERE MASV = '" + Program.AuthLogin + "'";
-                Program.myReader = Program.ExecSqlDataReader(caulenh);
-                if(Program.myReader == null)
+                try
                 {
-                    MessageBox.Show("Không tìm thấy thông tin sinh viên", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string caulenh = "SELECT HO, TEN ,NGAYSINH, DIACHI, MALOP, PASSWORD FROM DBO.SINHVIEN WHERE MASV = '" + Program.AuthLogin + "'";
+                    Program.myReader = Program.ExecSqlDataReader(caulenh);
+                    if (Program.myReader == null)
+                    {
+                        MessageBox.Show("Không tìm thấy thông tin sinh viên", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.myReader.Close();
+                        return;
+                    }
+                    Program.myReader.Read();
+
+                    /*if (Program.myReader.GetString(5) != Program.AuthPassword)
+                    {
+                        MessageBox.Show("Thông tin mật khẩu sinh viên không hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.myReader.Close();
+                        return;
+                    }*/
+
+
+                    Program.AuthHoten = Program.myReader.GetString(0) + " " + Program.myReader.GetString(1);
+                    //Program.AuthGroup = Program.myReader.GetString(2);
+                    Program.ServerLogin = Program.SVLogin;
+                    Program.ServerPassword = Program.SVPassword;
+
                     Program.myReader.Close();
-                    return;
                 }
-                Program.myReader.Read();
-
-                /*if (Program.myReader.GetString(5) != Program.AuthPassword)
+                catch(Exception ex )
                 {
-                    MessageBox.Show("Thông tin mật khẩu sinh viên không hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Program.myReader.Close();
-                    return;
-                }*/
-
-             
-                Program.AuthHoten = Program.myReader.GetString(0) + " " + Program.myReader.GetString(1);
-                //Program.AuthGroup = Program.myReader.GetString(2);
-                Program.ServerLogin = Program.SVLogin;
-                Program.ServerPassword = Program.SVPassword;
-
-                Program.myReader.Close();
+                    MessageBox.Show("Lỗi khi đăng nhập sinh viên , bạn hãy kiểm tra lại" + ex, "Thông báo", MessageBoxButtons.OK);
+                }
 
             }
 
             else
             {
-                string statement = "EXEC SP_Lay_Thong_Tin_GIANGVIEN_Tu_Login '" + Program.userName + "'";// chạy câu lệnh sp 
+                string statement = "EXEC SP_Lay_Thong_Tin_LOGINNAME_Tu_Login '" + Program.userName + "'";// chạy câu lệnh sp 
                 try
                 {
                     Program.myReader = Program.ExecSqlDataReader(statement);
@@ -131,7 +138,7 @@ namespace TN_CSDLPT
                 }
                 catch(Exception ex)
                 {
-                    MessageBox.Show("Loi 1" + ex, "Thông báo", MessageBoxButtons.OK);
+                    MessageBox.Show("Lỗi khi đăng nhập , bạn hãy kiểm tra lại " + ex, "Thông báo", MessageBoxButtons.OK);
                 }
                 if (Program.myReader == null)
                 {

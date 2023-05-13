@@ -317,8 +317,8 @@ namespace TN_CSDLPT
                 MessageBox.Show("Đã tồn tại mã câu hỏi bên trong CHI TIẾT BÀI THI", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
-            string undoCommand = "";
             Program.myReader.Close();
+            string undoCommand = "";
             try
             {
 

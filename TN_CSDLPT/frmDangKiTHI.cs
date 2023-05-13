@@ -174,7 +174,7 @@ namespace TN_CSDLPT
                 MessageBox.Show("Số câu thi nằm trong khoảng 10 đến 100 câu  !", "Thông báo", MessageBoxButtons.OK);
                 return false;
             }    
-            if (Regex.IsMatch(txtSoCauTHI.Text, @"^[0-9 ]+$") == false)
+            if (Regex.IsMatch(txtSoCauTHI.Text, @"^[0-9]+$") == false)
             {
                 MessageBox.Show("Số câu thi chỉ só thể là số!", "Thông báo", MessageBoxButtons.OK);
                 return false;
@@ -209,6 +209,33 @@ namespace TN_CSDLPT
             }
 
             //kiểm tra xem có bị trùng đăng kí thi
+
+
+            // kiểm tra số câu thi có bị thiếu trong bộ đề không
+            string truyvan = "SELECT COUNT(CAUHOI) FROM BODE WHERE MAGV = '" + txtMaGV.Text + "'";
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(truyvan);
+                if (Program.myReader == null)
+                {
+                    return;
+                }
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+
+            }
+            int socauhoi = int.Parse(Program.myReader.GetValue(0).ToString());
+            if(socauhoi < int.Parse(txtSoCauTHI.Text))
+            {
+                string socauthieu = string.Concat(int.Parse(txtSoCauTHI.Text) - socauhoi);
+                MessageBox.Show("Số câu thi yêu cầu vượt quá số câu hỏi trong bộ đề, thiếu " + socauthieu, "THÔNG BÁO", MessageBoxButtons.OK);
+                return;
+            }    
+
             DialogResult dr = MessageBox.Show("Bạn có chắc ghi dữ liệu vào cơ sở dữ liệu ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if(dr == DialogResult.OK)
             {

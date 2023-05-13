@@ -52,6 +52,7 @@ namespace TN_CSDLPT
 
         private void frmKHOA_LOP_Load(object sender, EventArgs e)
         {
+
             this.dataSet.EnforceConstraints = false;
             // TODO: This line of code loads data into the 'dataSet.LOP' table. You can move, or remove it, as needed.
             this.lOPTableAdapter.Connection.ConnectionString = Program.connstr;
@@ -300,12 +301,12 @@ namespace TN_CSDLPT
             }
 
             // XẢY RA LỖI
-            if (bdsLOP_FK_KHOA.Count > 0)
+            if (bdsLop.Count > 0)
             {
                 MessageBox.Show("Không thể xóa khoa này vì đã tồn tại lớp!", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
-            if (bdsGIAOVIEN_FK_KHOA.Count > 0)
+            if (bdsGiangVien.Count > 0)
             {
                 MessageBox.Show("Không thễ xóa khoa này vì đã tồn tại giáo viên bên trong khoa!", "Thông báo", MessageBoxButtons.OK);
                 return;
@@ -412,7 +413,7 @@ namespace TN_CSDLPT
         {
             try
             {
-                this.bdsLOP.AddNew();
+                this.bdsLop.AddNew();
                 this.btnXOA_LOP.Enabled = false;
                 kiemtraThemMoi_Lop = true;
                 this.btnGHI_LOP.Enabled = true;
@@ -420,9 +421,6 @@ namespace TN_CSDLPT
                 this.btnHOANTAC_LOP.Enabled = true;
                 this.btnLAMMOI_LOP.Enabled = false;
 
-                txtMaKH.Text = maKhoa;
-
-                txtMaKH.Enabled = false;
 
             }
             catch (Exception ex)
@@ -478,24 +476,26 @@ namespace TN_CSDLPT
 
         private void btnXOA_LOP_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if(bdsLOP.Count == 0)
+            if(bdsLop.Count == 0)
             {
                 MessageBox.Show("Không tồn tại lớp nào để xóa!", "Thông báo", MessageBoxButtons.OK);
             }    
-            if (bdsSINHVIEN_FK_LOP.Count > 0)
+            if (bdsSinhVien.Count > 0)
             {
                 MessageBox.Show("Không thể xóa lớp này vì đã tồn tại sinh viên!", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
-            if (bdsGIAOVIEN_DANGKI_FK_LOP.Count > 0)
+            if (bdsGiaoVien_DangKi.Count > 0)
             {
                 MessageBox.Show("Không thể xóa lớp này vì đã tồn tại giáo viên đăng kí lớp!", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
+            maKhoa = ((DataRowView)bdsKHOA[bdsKHOA.Position])["MAKH"].ToString();
+
             string cautruyvanHoanTac =
             "INSERT INTO DBO.LOP( MALOP, TENLOP, MAKH)" +
             " VALUES ( '" + txtMaKhoa.Text.Trim() + "','" +
-                        txtTenKhoa.Text.Trim() + "','"+txtMaKH.Text + "') ";
+                        txtTenKhoa.Text.Trim() + "','"+ maKhoa + "') ";
 
             DialogResult dr = MessageBox.Show("Bạn có chắc xóa không ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if (dr == DialogResult.OK)
@@ -562,11 +562,11 @@ namespace TN_CSDLPT
                         }
                         else
                         {
-                            strlenhUndo = "UPDATE DBO.LOP SET TENLOP = '" + txtTenLop.Text + "'" + "MAKH = '" + txtMaKH.Text + "'" + "WHERE MALOP = '" + txtMaLop.Text + "'";
+                            strlenhUndo = "UPDATE DBO.LOP SET TENLOP = '" + txtTenLop.Text + "'" + "WHERE MALOP = '" + txtMaLop.Text + "'";
 
                         }
                         undo_Lop.Push(strlenhUndo);
-                        this.bdsLOP.EndEdit();
+                        this.bdsLop.EndEdit();
                         
                         this.lOPTableAdapter.Update(this.dataSet.LOP);
                         MessageBox.Show("Ghi thành công", "Thông báo", MessageBoxButtons.OK);
@@ -576,7 +576,7 @@ namespace TN_CSDLPT
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
-                        bdsLOP.RemoveCurrent();
+                        bdsLop.RemoveCurrent();
                         MessageBox.Show("Tên LỚP có thể đã được dùng !\n\n" + ex.Message, "Lỗi",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
@@ -585,7 +585,6 @@ namespace TN_CSDLPT
             }
 
             kiemtraThemMoi_Lop = false;
-            txtMaKH.Enabled = false;
             return;
 
         }
@@ -609,13 +608,36 @@ namespace TN_CSDLPT
 
         private void btnTIMLOP_THEOKHOA_Click(object sender, EventArgs e)
         {
-            maKhoa = ((DataRowView)bdsKHOA[bdsKHOA.Position])["MAKH"].ToString();
+            /*maKhoa = ((DataRowView)bdsKHOA[bdsKHOA.Position])["MAKH"].ToString();
             MessageBox.Show("Mã khoa : " + maKhoa, "Thông báo", MessageBoxButtons.OK);
             //String query = "SELECT MALOP, TENLOP, MAKH FROM DBO.LOP WHERE MAKH = '" + maKhoa + "'";
             //lOPGridControl.DataSource = Program.ExecDataTable(query);
             this.lOPTableAdapter.FillByTheoKhoa(this.dataSet.LOP, makhoa);
             txtMaKH.Text = maKhoa;
-            txtMaKH.Enabled = false;
+            txtMaKH.Enabled = false;*/
+        }
+
+        private void panelControl2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void txtMaCS_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bdsLOP_CurrentChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void kHOABindingNavigatorSaveItem_Click_1(object sender, EventArgs e)
+        {
+            this.Validate();
+            this.bdsKHOA.EndEdit();
+            this.tableAdapterManager.UpdateAll(this.dataSet);
+
         }
     }
 }

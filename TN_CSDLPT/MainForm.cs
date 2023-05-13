@@ -67,6 +67,7 @@ namespace TN_CSDLPT
                 this.btnMONHOC.Enabled = true;
                 this.btnKhoa_Lop.Enabled = true;
                 this.btnSinhVien.Enabled = true;
+                this.btnDANGKI_THI.Enabled = true;
                 
             }
             
@@ -218,6 +219,7 @@ namespace TN_CSDLPT
             else
             {
                 frmKHOA_LOP frmKHOA_LOp = new frmKHOA_LOP();
+               
                 //frmKHOA_LOp.MdiParent = this;
                 frmKHOA_LOp.Show();
             }
@@ -225,7 +227,17 @@ namespace TN_CSDLPT
 
         private void btnTHI_ItemClick(object sender, ItemClickEventArgs e)
         {
-
+            Form f = this.CheckExists(typeof(frmEXAM));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                frmEXAM formTHI = new frmEXAM();
+                formTHI.MdiParent = this;
+                formTHI.Show();
+            }
         }
 
         private void btnBODE_ItemClick(object sender, ItemClickEventArgs e)
@@ -257,6 +269,11 @@ namespace TN_CSDLPT
                 dangkiTHI.MdiParent = this;
                 dangkiTHI.Show();
             }
+        }
+
+        private void btnThoat_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            this.Dispose();
         }
     }
 }

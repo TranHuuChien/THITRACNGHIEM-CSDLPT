@@ -47,7 +47,6 @@ D:\DOANCSDLPT\TN_CSDLPT\TN_CSDLPT\bin\Debug\DevExpress.Office.v22.2.Core.xml
 D:\DOANCSDLPT\TN_CSDLPT\TN_CSDLPT\obj\Debug\TN_CSDLPT.MonHocForm.resources
 D:\DOANCSDLPT\TN_CSDLPT\TN_CSDLPT\obj\Debug\TN_CSDLPT.frmTaoTaiKhoan.resources
 D:\DOANCSDLPT\TN_CSDLPT\TN_CSDLPT\obj\Debug\TN_CSDLPT.frmSinhVien.resources
-D:\DOANCSDLPT\TN_CSDLPT\TN_CSDLPT\obj\Debug\TN_CSDLPT.Mau.resources
 D:\DOANCSDLPT\TN_CSDLPT\TN_CSDLPT\obj\Debug\TN_CSDLPT.frmKHOA_LOP.resources
 D:\DOANCSDLPT\TN_CSDLPT\TN_CSDLPT\obj\Debug\TN_CSDLPT.Subform.frmChonLop.resources
 D:\DOANCSDLPT\TN_CSDLPT\TN_CSDLPT\obj\Debug\TN_CSDLPT.frmBoDe.resources

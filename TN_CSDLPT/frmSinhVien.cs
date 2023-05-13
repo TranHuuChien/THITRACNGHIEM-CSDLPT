@@ -38,12 +38,10 @@ namespace TN_CSDLPT
 
         private void frmSinhVien_Load(object sender, EventArgs e)
         {
+            // TODO: This line of code loads data into the 'DataSet.LOP' table. You can move, or remove it, as needed.
             DataSet.EnforceConstraints = false;
-            // TODO: This line of code loads data into the 'DataSet.SP_LAY_DANH_SACH_LOP' table. You can move, or remove it, as needed.
-            this.sP_LAY_DANH_SACH_LOPTableAdapter.Connection.ConnectionString = Program.connstr;
-            this.sP_LAY_DANH_SACH_LOPTableAdapter.Fill(this.DataSet.SP_LAY_DANH_SACH_LOP);
-
-            
+            this.lOPTableAdapter.Connection.ConnectionString = Program.connstr;
+            this.lOPTableAdapter.Fill(this.DataSet.LOP);
             // TODO: This line of code loads data into the 'dataSet.SINHVIEN' table. You can move, or remove it, as needed.
             this.sINHVIENTableAdapter.Connection.ConnectionString = Program.connstr;
             this.sINHVIENTableAdapter.Fill(this.DataSet.SINHVIEN);
@@ -106,9 +104,8 @@ namespace TN_CSDLPT
             }
             else
             {
-                this.sP_LAY_DANH_SACH_LOPTableAdapter.Connection.ConnectionString = Program.connstr;
-                this.sP_LAY_DANH_SACH_LOPTableAdapter.Fill(this.DataSet.SP_LAY_DANH_SACH_LOP);
-
+                this.lOPTableAdapter.Connection.ConnectionString = Program.connstr;
+                this.lOPTableAdapter.Fill(this.DataSet.LOP);
                 // TODO: This line of code loads data into the 'dataSet.SINHVIEN' table. You can move, or remove it, as needed.
                 this.sINHVIENTableAdapter.Connection.ConnectionString = Program.connstr;
                 this.sINHVIENTableAdapter.Fill(this.DataSet.SINHVIEN);
