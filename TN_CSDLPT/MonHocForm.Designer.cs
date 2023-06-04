@@ -37,6 +37,8 @@
             this.btnTHEM = new DevExpress.XtraBars.BarButtonItem();
             this.btnXOA = new DevExpress.XtraBars.BarButtonItem();
             this.btnGHI = new DevExpress.XtraBars.BarButtonItem();
+            this.btnSUA = new DevExpress.XtraBars.BarButtonItem();
+            this.btnCANCEL = new DevExpress.XtraBars.BarButtonItem();
             this.btnLAMMOI = new DevExpress.XtraBars.BarButtonItem();
             this.btnHOANTAC = new DevExpress.XtraBars.BarButtonItem();
             this.btnTHOAT = new DevExpress.XtraBars.BarButtonItem();
@@ -87,18 +89,18 @@
             mAMHLabel.AutoSize = true;
             mAMHLabel.Location = new System.Drawing.Point(132, 39);
             mAMHLabel.Name = "mAMHLabel";
-            mAMHLabel.Size = new System.Drawing.Size(61, 19);
+            mAMHLabel.Size = new System.Drawing.Size(126, 19);
             mAMHLabel.TabIndex = 0;
-            mAMHLabel.Text = "MAMH:";
+            mAMHLabel.Text = "MÃ MÔN HỌC : ";
             // 
             // tENMHLabel
             // 
             tENMHLabel.AutoSize = true;
             tENMHLabel.Location = new System.Drawing.Point(132, 103);
             tENMHLabel.Name = "tENMHLabel";
-            tENMHLabel.Size = new System.Drawing.Size(68, 19);
+            tENMHLabel.Size = new System.Drawing.Size(128, 19);
             tENMHLabel.TabIndex = 2;
-            tENMHLabel.Text = "TENMH:";
+            tENMHLabel.Text = "TÊN MÔN HỌC :";
             // 
             // barManager1
             // 
@@ -117,9 +119,11 @@
             this.btnGHI,
             this.btnLAMMOI,
             this.btnHOANTAC,
-            this.btnTHOAT});
+            this.btnTHOAT,
+            this.btnSUA,
+            this.btnCANCEL});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 6;
+            this.barManager1.MaxItemId = 8;
             this.barManager1.StatusBar = this.bar3;
             // 
             // bar1
@@ -132,6 +136,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnTHEM, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnXOA, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnGHI, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnSUA, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnCANCEL, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnLAMMOI, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnHOANTAC, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnTHOAT, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
@@ -156,10 +162,30 @@
             // btnGHI
             // 
             this.btnGHI.Caption = "GHI";
+            this.btnGHI.Enabled = false;
             this.btnGHI.Id = 2;
             this.btnGHI.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("btnGHI.ImageOptions.SvgImage")));
             this.btnGHI.Name = "btnGHI";
             this.btnGHI.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnGHI_ItemClick);
+            // 
+            // btnSUA
+            // 
+            this.btnSUA.Caption = "SỬA";
+            this.btnSUA.Id = 6;
+            this.btnSUA.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnSUA.ImageOptions.Image")));
+            this.btnSUA.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnSUA.ImageOptions.LargeImage")));
+            this.btnSUA.Name = "btnSUA";
+            this.btnSUA.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnSUA_ItemClick);
+            // 
+            // btnCANCEL
+            // 
+            this.btnCANCEL.Caption = "CANCEL";
+            this.btnCANCEL.Enabled = false;
+            this.btnCANCEL.Id = 7;
+            this.btnCANCEL.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnCANCEL.ImageOptions.Image")));
+            this.btnCANCEL.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnCANCEL.ImageOptions.LargeImage")));
+            this.btnCANCEL.Name = "btnCANCEL";
+            this.btnCANCEL.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnCANCEL_ItemClick);
             // 
             // btnLAMMOI
             // 
@@ -251,6 +277,7 @@
             // 
             // cmbCoSo
             // 
+            this.cmbCoSo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCoSo.FormattingEnabled = true;
             this.cmbCoSo.Location = new System.Drawing.Point(150, 16);
             this.cmbCoSo.Name = "cmbCoSo";
@@ -294,7 +321,7 @@
             this.tableAdapterManager.LOPTableAdapter = null;
             this.tableAdapterManager.MONHOCTableAdapter = this.mONHOCTableAdapter;
             this.tableAdapterManager.SINHVIENTableAdapter = null;
-            this.tableAdapterManager.SP_LAY_DS_LOP_THEO_KHOATableAdapter = null;
+           
             this.tableAdapterManager.UpdateOrder = TN_CSDLPT.DataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             // 
             // bAITHITableAdapter
@@ -332,18 +359,22 @@
             // 
             // colMAMH
             // 
+            this.colMAMH.Caption = "MÃ MÔN HỌC";
             this.colMAMH.FieldName = "MAMH";
             this.colMAMH.MinWidth = 30;
             this.colMAMH.Name = "colMAMH";
+            this.colMAMH.OptionsColumn.AllowEdit = false;
             this.colMAMH.Visible = true;
             this.colMAMH.VisibleIndex = 0;
             this.colMAMH.Width = 112;
             // 
             // colTENMH
             // 
+            this.colTENMH.Caption = "TÊN MÔN HỌC";
             this.colTENMH.FieldName = "TENMH";
             this.colTENMH.MinWidth = 30;
             this.colTENMH.Name = "colTENMH";
+            this.colTENMH.OptionsColumn.AllowEdit = false;
             this.colTENMH.Visible = true;
             this.colTENMH.VisibleIndex = 1;
             this.colTENMH.Width = 112;
@@ -356,6 +387,7 @@
             this.panelNhapLieu.Controls.Add(this.txtMaMonHoc);
             this.panelNhapLieu.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.panelNhapLieu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelNhapLieu.Enabled = false;
             this.panelNhapLieu.Location = new System.Drawing.Point(0, 339);
             this.panelNhapLieu.Name = "panelNhapLieu";
             this.panelNhapLieu.Size = new System.Drawing.Size(1257, 173);
@@ -364,7 +396,7 @@
             // txtTenMonHoc
             // 
             this.txtTenMonHoc.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bdsMONHOC, "TENMH", true));
-            this.txtTenMonHoc.Location = new System.Drawing.Point(206, 100);
+            this.txtTenMonHoc.Location = new System.Drawing.Point(280, 100);
             this.txtTenMonHoc.Name = "txtTenMonHoc";
             this.txtTenMonHoc.Size = new System.Drawing.Size(220, 27);
             this.txtTenMonHoc.TabIndex = 3;
@@ -372,7 +404,7 @@
             // txtMaMonHoc
             // 
             this.txtMaMonHoc.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bdsMONHOC, "MAMH", true));
-            this.txtMaMonHoc.Location = new System.Drawing.Point(206, 36);
+            this.txtMaMonHoc.Location = new System.Drawing.Point(280, 36);
             this.txtMaMonHoc.Name = "txtMaMonHoc";
             this.txtMaMonHoc.Size = new System.Drawing.Size(180, 27);
             this.txtMaMonHoc.TabIndex = 1;
@@ -462,5 +494,7 @@
         private System.Windows.Forms.BindingSource bdsBODE;
         private DataSetTableAdapters.BAITHITableAdapter bAITHITableAdapter;
         private System.Windows.Forms.BindingSource bdsBAITHI;
+        private DevExpress.XtraBars.BarButtonItem btnSUA;
+        private DevExpress.XtraBars.BarButtonItem btnCANCEL;
     }
 }

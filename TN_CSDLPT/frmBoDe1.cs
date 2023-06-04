@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using TN_CSDLPT.Subform;
 namespace TN_CSDLPT
 {
     public partial class frmBoDe1 : DevExpress.XtraEditors.XtraForm
@@ -43,6 +43,8 @@ namespace TN_CSDLPT
             cbbTrinhDo.Items.Add("A");
             cbbTrinhDo.Items.Add("B");
             cbbTrinhDo.Items.Add("C");
+            cbbTrinhDo.SelectedIndex = 0;
+            //cbbDapAn.SelectedIndex = 0;
 
             cbbDapAn.Items.Add("A");
             cbbDapAn.Items.Add("B");
@@ -82,30 +84,33 @@ namespace TN_CSDLPT
             try
             {
                 bdsBoDe.AddNew();
-                this.bODEGridControl.Enabled = false;
+                //this.bODEGridControl.Enabled = false;
+                panelNhapLieu.Enabled = true;
                 kiemtraThemMoiCauHoi = true;
 
                 btnTHEM.Enabled = false;
                 btnGHI.Enabled = true;
                 btnXOA.Enabled = false;
-                btnTHOAT.Enabled = true;
+                btnTHOAT.Enabled = false;
                 btnHOANTAC.Enabled = false;
                 btnLAMMOI.Enabled = false;
-                //LayDSTrinhDo("SELECT TENTRINHDO = 'TRINH DO  ' + TRINHDO, TRINHDO FROM DBO.BODE GROUP BY TRINHDO");
+                btnCANCEL.Enabled = true;
+                btnSUA.Enabled = false;
+                
                 txtMaGV.Text = Program.userName;
                 txtMaGV.Enabled = false;
                 //txtTrinhDo.Visible = false;
                 //cmbTrinhDo.Visible = true;
-                string SLcauHoi = "SELECT COUNT(CAUHOI) FROM BODE";
+                //string SLcauHoi = "SELECT COUNT(CAUHOI) FROM BODE";
  
-                    Program.myReader = Program.ExecSqlDataReader(SLcauHoi);
-                    if (Program.myReader == null)
-                    {
-                        return;
-                    }
+                //    Program.myReader = Program.ExecSqlDataReader(SLcauHoi);
+                //    if (Program.myReader == null)
+                //    {
+                //        return;
+                //    }
                 
-                int sl = int.Parse(Program.myReader.GetValue(0).ToString());
-                txtCauHoi.Text = string.Concat(sl + 1);
+                //int sl = int.Parse(Program.myReader.GetValue(0).ToString());
+                //txtCauHoi.Text = string.Concat(sl + 1);
 
             }
             catch (Exception ex)
@@ -115,18 +120,18 @@ namespace TN_CSDLPT
         }
         private bool kiemtra()
         {
-            if (txtCauHoi.Text == "")
-            {
-                MessageBox.Show("Không được để trống Mã câu hỏi ", "Thông báo", MessageBoxButtons.OK);
-                txtCauHoi.Focus();
-                return false;
-            }
-            if (Regex.IsMatch(txtCauHoi.Text, @"^[0-9]+$") == false)
-            {
-                MessageBox.Show("Mã câu hỏi chỉ có số", "Thông báo", MessageBoxButtons.OK);
-                txtCauHoi.Focus();
-                return false;
-            }
+            //if (txtCauHoi.Text == "")
+            //{
+            //    MessageBox.Show("Không được để trống Mã câu hỏi ", "Thông báo", MessageBoxButtons.OK);
+            //    txtCauHoi.Focus();
+            //    return false;
+            //}
+            //if (Regex.IsMatch(txtCauHoi.Text, @"^[0-9]+$") == false)
+            //{
+            //    MessageBox.Show("Mã câu hỏi chỉ có số", "Thông báo", MessageBoxButtons.OK);
+            //    txtCauHoi.Focus();
+            //    return false;
+            //}
             // Mã môn học cho phép chọn nên không cần kiểm tra điều kiện vào
 
             if (txtNoiDung.Text == "")
@@ -164,11 +169,7 @@ namespace TN_CSDLPT
 
             return true;
         }
-        private void bODEGridControl_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        
         private void btnGHI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             if (!kiemtra())
@@ -177,7 +178,7 @@ namespace TN_CSDLPT
             }
             string caulenhHoanTac = "";
 
-            String truyvan = "DECLARE @kq INT " + "EXEC @kq= SP_KiemTra_CauHoi_ADD " + txtCauHoi.Text + "select 'Value' =  @kq";
+           /* String truyvan = "DECLARE @kq INT " + "EXEC @kq= SP_KiemTra_CauHoi_ADD " + txtCauHoi.Text + "select 'Value' =  @kq";
             try
             {
                 Program.myReader = Program.ExecSqlDataReader(truyvan);
@@ -199,7 +200,7 @@ namespace TN_CSDLPT
                 
                 return;
             }
-            Program.myReader.Close();
+            Program.myReader.Close();*/
             DialogResult dr = MessageBox.Show("Bạn có chắc ghi dữ liệu vào cơ sở dữ liệu ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if (dr == DialogResult.OK)
             {
@@ -208,7 +209,7 @@ namespace TN_CSDLPT
                 // TRƯỚC KHI NHẤN NÚT GHI LÀ NÚT THÊM
                 if (kiemtraThemMoiCauHoi == true)
                 {
-                    caulenhHoanTac = "delete DBO.BODE WHERE CAUHOI = " + txtCauHoi.Text.Trim() + "";
+                    caulenhHoanTac = "delete DBO.BODE WHERE CAUHOI = '" + txtCauHoi.Text.Trim() + "'";
 
                 }
                 // TRƯỚC KHI NHẤN NÚT GHI LÀ SỬA
@@ -222,14 +223,39 @@ namespace TN_CSDLPT
 
 
                 }
-
+                string truyvan = "INSERT INTO BODE (MAMH,TRINHDO,NOIDUNG,A,B,C,D,DAP_AN,MAGV) VALUES('" +txtMaMH.Text.Trim()
+                +"','" + cbbTrinhDo.Text +"','"+ txtNoiDung.Text.Trim() +"', '" + txtA.Text.Trim() +"',' " + txtB.Text.Trim()
+                +"','" + txtC.Text.Trim() +"','" + txtD.Text.Trim()+"','"+ cbbDapAn.Text+ "','" + txtMaGV.Text +"')";
                 undo.Push(caulenhHoanTac);
                 this.bdsBoDe.EndEdit();
-              
+                try
+                {
+                    Program.myReader = Program.ExecSqlDataReader(truyvan);
+                    if (Program.myReader == null)
+                    {
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                Program.myReader.Read();
+                
+                //this.bODETableAdapter.Update(this.dataSet.BODE);
                 MessageBox.Show("Ghi thành công", "Thông báo", MessageBoxButtons.OK);
 
-                btnTHEM.Enabled = btnXOA.Enabled = btnHOANTAC.Enabled = btnLAMMOI.Enabled = true;
-                btnGHI.Enabled = true;
+                btnTHEM.Enabled = true;
+                btnXOA.Enabled = true;
+                btnHOANTAC.Enabled = true;
+                btnLAMMOI.Enabled = true;
+                btnGHI.Enabled = false;
+                btnSUA.Enabled = true;
+                btnTHOAT.Enabled = true;
+                btnCANCEL.Enabled = false;
+
+                panelNhapLieu.Enabled = false;
                 kiemtraThemMoiCauHoi = false;
             }
 
@@ -296,17 +322,19 @@ namespace TN_CSDLPT
 
         private void btnHOANTAC_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            this.btnTHEM.Enabled = true;
-            this.btnXOA.Enabled = true;
-            this.btnGHI.Enabled = true;
-
-            this.btnHOANTAC.Enabled = true;
-            this.btnLAMMOI.Enabled = true;
-            this.btnTHOAT.Enabled = true;
+            btnTHEM.Enabled = true;
+            btnGHI.Enabled = true;
+            btnXOA.Enabled = true;
+            btnTHOAT.Enabled = true;
+            btnHOANTAC.Enabled = true;
+            btnLAMMOI.Enabled = true;
+            btnCANCEL.Enabled = false;
+            btnSUA.Enabled = true;
+            panelNhapLieu.Enabled = false;
             if (undo.Count == 0)
             {
                 MessageBox.Show("Không còn thao tác nào để khôi phục dữ liệu ", "Thông báo", MessageBoxButtons.OK);
-                btnHOANTAC.Enabled = false;
+               
                 return;
             }
             bdsBoDe.CancelEdit();
@@ -326,13 +354,18 @@ namespace TN_CSDLPT
 
         private void btnCANCEL_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            this.btnTHEM.Enabled = true;
-            this.btnXOA.Enabled = true;
-            this.btnGHI.Enabled = true;
+            btnTHEM.Enabled = true;
+            btnGHI.Enabled = true;
+            btnXOA.Enabled = true;
+            btnTHOAT.Enabled = true;
+            btnHOANTAC.Enabled = true;
+            btnLAMMOI.Enabled = true;
+            btnCANCEL.Enabled = false;
+            btnSUA.Enabled = true;
 
-            this.btnHOANTAC.Enabled = true;
-            this.btnLAMMOI.Enabled = true;
-            this.btnTHOAT.Enabled = true;
+            bdsBoDe.RemoveCurrent();
+
+            panelNhapLieu.Enabled = false;
             kiemtraThemMoiCauHoi = false;
         }
 
@@ -375,9 +408,28 @@ namespace TN_CSDLPT
             }
         }
 
-        private void txtCauHoi_TextChanged(object sender, EventArgs e)
+        private void btnSUA_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            btnTHEM.Enabled = false;
+            btnGHI.Enabled = true;
+            btnXOA.Enabled = false;
+            btnTHOAT.Enabled = false;
+            btnHOANTAC.Enabled = false;
+            btnLAMMOI.Enabled = false;
+            btnCANCEL.Enabled = true;
+            btnSUA.Enabled = false;
 
+            kiemtraThemMoiCauHoi = false;
+            panelNhapLieu.Enabled = true;
+
+
+        }
+
+        private void btnChon_Click(object sender, EventArgs e)
+        {
+            ChonMonHoc monhoc = new ChonMonHoc();
+            monhoc.ShowDialog();
+            txtMaMH.Text = Program.MaMonDaChon;
         }
     }
 }

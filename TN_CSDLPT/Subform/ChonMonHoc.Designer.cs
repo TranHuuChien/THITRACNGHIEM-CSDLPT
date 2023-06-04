@@ -41,12 +41,14 @@
             this.btnTHOAT = new System.Windows.Forms.Button();
             this.btnCHON = new System.Windows.Forms.Button();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sP_LAYDANHSACH_MONHOCBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sP_LAYDANHSACH_MONHOCGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
             this.panelControl1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataSet
@@ -77,17 +79,16 @@
             this.tableAdapterManager.LOPTableAdapter = null;
             this.tableAdapterManager.MONHOCTableAdapter = null;
             this.tableAdapterManager.SINHVIENTableAdapter = null;
-            this.tableAdapterManager.SP_LAY_DS_LOP_THEO_KHOATableAdapter = null;
             this.tableAdapterManager.UpdateOrder = TN_CSDLPT.DataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             // 
             // sP_LAYDANHSACH_MONHOCGridControl
             // 
             this.sP_LAYDANHSACH_MONHOCGridControl.DataSource = this.sP_LAYDANHSACH_MONHOCBindingSource;
-            this.sP_LAYDANHSACH_MONHOCGridControl.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.sP_LAYDANHSACH_MONHOCGridControl.Location = new System.Drawing.Point(0, 481);
+            this.sP_LAYDANHSACH_MONHOCGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sP_LAYDANHSACH_MONHOCGridControl.Location = new System.Drawing.Point(0, 0);
             this.sP_LAYDANHSACH_MONHOCGridControl.MainView = this.gridView1;
             this.sP_LAYDANHSACH_MONHOCGridControl.Name = "sP_LAYDANHSACH_MONHOCGridControl";
-            this.sP_LAYDANHSACH_MONHOCGridControl.Size = new System.Drawing.Size(794, 280);
+            this.sP_LAYDANHSACH_MONHOCGridControl.Size = new System.Drawing.Size(794, 340);
             this.sP_LAYDANHSACH_MONHOCGridControl.TabIndex = 1;
             this.sP_LAYDANHSACH_MONHOCGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -120,18 +121,16 @@
             // 
             // panelControl1
             // 
-            this.panelControl1.Controls.Add(this.btnTHOAT);
-            this.panelControl1.Controls.Add(this.btnCHON);
             this.panelControl1.Controls.Add(this.labelControl1);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl1.Location = new System.Drawing.Point(0, 0);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(794, 165);
+            this.panelControl1.Size = new System.Drawing.Size(794, 105);
             this.panelControl1.TabIndex = 2;
             // 
             // btnTHOAT
             // 
-            this.btnTHOAT.Location = new System.Drawing.Point(448, 103);
+            this.btnTHOAT.Location = new System.Drawing.Point(448, 498);
             this.btnTHOAT.Name = "btnTHOAT";
             this.btnTHOAT.Size = new System.Drawing.Size(143, 37);
             this.btnTHOAT.TabIndex = 2;
@@ -141,7 +140,7 @@
             // 
             // btnCHON
             // 
-            this.btnCHON.Location = new System.Drawing.Point(146, 102);
+            this.btnCHON.Location = new System.Drawing.Point(183, 498);
             this.btnCHON.Name = "btnCHON";
             this.btnCHON.Size = new System.Drawing.Size(135, 38);
             this.btnCHON.TabIndex = 1;
@@ -159,13 +158,24 @@
             this.labelControl1.TabIndex = 0;
             this.labelControl1.Text = "DANH SÁCH MÔN HỌC";
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.sP_LAYDANHSACH_MONHOCGridControl);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 105);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(794, 340);
+            this.panel1.TabIndex = 3;
+            // 
             // ChonMonHoc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(794, 761);
+            this.ClientSize = new System.Drawing.Size(794, 618);
+            this.Controls.Add(this.btnTHOAT);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.btnCHON);
             this.Controls.Add(this.panelControl1);
-            this.Controls.Add(this.sP_LAYDANHSACH_MONHOCGridControl);
             this.Name = "ChonMonHoc";
             this.Text = "ChonMonHoc";
             this.Load += new System.EventHandler(this.ChonMonHoc_Load);
@@ -176,6 +186,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);
             this.panelControl1.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -194,5 +205,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn colTENMH;
         private System.Windows.Forms.Button btnCHON;
         private System.Windows.Forms.Button btnTHOAT;
+        private System.Windows.Forms.Panel panel1;
     }
 }

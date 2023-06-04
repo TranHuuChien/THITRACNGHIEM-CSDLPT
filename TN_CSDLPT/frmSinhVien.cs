@@ -126,39 +126,19 @@ namespace TN_CSDLPT
 
             // step 2 : nhay xuong cuoi them 1 dong moi
             bdsSINHVIEN.AddNew();
-
-            this.txtMaSV.Enabled = true;
-            this.txtHO.Enabled = true;
-            this.txtTEN.Enabled = true;
-            this.txtNgaySinh.Enabled = true;
-            this.txtMaLop.Enabled = false;
-            this.txtDiaChi.Enabled = true;
-            this.txtPassword.Enabled = true;
-
-
-
+            
+            panelNhapLieu.Enabled = true;
             this.btnTHEM.Enabled = false;
             this.btnXOA.Enabled = false;
             this.btnGHI.Enabled = true;
-
-            this.btnHOANTAC.Enabled = true;
+            this.btnHOANTAC.Enabled = false;
             this.btnLAMMOI.Enabled = false;
             this.btnTHOAT.Enabled = false;
-
-            DataRowView drv = ((DataRowView)(bdsSP_Lop.Current));
-            maLop = drv["MALOP"].ToString().Trim();
-            txtMaLop.Text = maLop;
-            sINHVIENGridControl.Enabled = false;
+            btnCANCEL.Enabled = true;
 
         }
 
-        private void btnChonLop_Click(object sender, EventArgs e)
-        {
-            frmChonLop chonLop = new frmChonLop();
-            //chonLop.MdiParent = this;
-            chonLop.ShowDialog();
-            this.txtMaLop.Text = Program.MaLopDuocChon;
-        }
+        
 
         private void btnXOA_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -194,6 +174,15 @@ namespace TN_CSDLPT
                     this.btnHOANTAC.Enabled = true;
 
                     // lưu câu lệnh để hoàn tác
+                    panelNhapLieu.Enabled = false;
+                    this.btnTHEM.Enabled = true;
+                    this.btnXOA.Enabled = true;
+                    this.btnGHI.Enabled = false;
+                    this.btnHOANTAC.Enabled = true;
+                    this.btnLAMMOI.Enabled = true;
+                    this.btnTHOAT.Enabled = true;
+                    btnCANCEL.Enabled = false;
+
                     undo.Push(caulenhhoantac);
 
                 }
@@ -360,15 +349,23 @@ namespace TN_CSDLPT
 
                     undo.Push(caulenhHoanTac);
                     this.bdsSINHVIEN.EndEdit();
-                    string insertSinhVien = "INSERT INTO SINHVIEN(MASV, HO, TEN, NGAYSINH, DIACHI, MALOP, PASSWORD) VALUES( "
-                    + txtMaSV.Text.Trim() + ",'" + txtHO.Text.Trim() + "','" + txtTEN.Text.Trim() + "','"
-                    + txtNgaySinh.Text.Trim() + "','" + txtDiaChi.Text.Trim() + "','" + txtMaLop.Text.Trim() + "','" + txtPassword.Text.Trim() +  "')";
-                    this.sINHVIENTableAdapter.Update(this.DataSet.SINHVIEN);
+                    //string insertSinhVien = "INSERT INTO SINHVIEN(MASV, HO, TEN, NGAYSINH, DIACHI, MALOP, PASSWORD) VALUES( "
+                    //+ txtMaSV.Text.Trim() + ",'" + txtHO.Text.Trim() + "','" + txtTEN.Text.Trim() + "','"
+                    //+ txtNgaySinh.Text.Trim() + "','" + txtDiaChi.Text.Trim() + "','" + txtMaLop.Text.Trim() + "','" + txtPassword.Text.Trim() +  "')";
+                    //this.sINHVIENTableAdapter.Update(this.DataSet.SINHVIEN);
+                    panelNhapLieu.Enabled = false;
+                    this.btnTHEM.Enabled = true;
+                    this.btnXOA.Enabled = true;
+                    this.btnGHI.Enabled = false;
+                    this.btnHOANTAC.Enabled = true;
+                    this.btnLAMMOI.Enabled = true;
+                    this.btnTHOAT.Enabled = true;
+                    btnCANCEL.Enabled = false;
 
                     MessageBox.Show("Ghi thành công", "Thông báo", MessageBoxButtons.OK);
 
                 }
-                sINHVIENGridControl.Enabled = true;
+                
 
             }
             kiemtraThemMoi = false;
@@ -380,14 +377,14 @@ namespace TN_CSDLPT
 
         private void btnHOANTAC_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            panelNhapLieu.Enabled = false;
             this.btnTHEM.Enabled = true;
             this.btnXOA.Enabled = true;
-            this.btnGHI.Enabled = true;
-
+            this.btnGHI.Enabled = false;
             this.btnHOANTAC.Enabled = true;
             this.btnLAMMOI.Enabled = true;
             this.btnTHOAT.Enabled = true;
-
+            btnCANCEL.Enabled = false;
 
 
             if (undo.Count == 0)
@@ -425,6 +422,33 @@ namespace TN_CSDLPT
 
             this.sINHVIENTableAdapter.Connection.ConnectionString = Program.connstr;
             this.sINHVIENTableAdapter.FillSinhVienTheoLop(this.DataSet.SINHVIEN, maLop);
+        }
+
+        private void btnCANCEL_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            if(kiemtraThemMoi == true)
+            {
+                bdsSINHVIEN.RemoveCurrent();
+            }    
+            panelNhapLieu.Enabled = false;
+            this.btnTHEM.Enabled = true;
+            this.btnXOA.Enabled = true;
+            this.btnGHI.Enabled = false;
+            this.btnHOANTAC.Enabled = true;
+            this.btnLAMMOI.Enabled = true;
+            this.btnTHOAT.Enabled = true;
+            btnCANCEL.Enabled = false;
+
+        }
+
+        private void btnLAMMOI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+
+        }
+
+        private void dIACHILabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

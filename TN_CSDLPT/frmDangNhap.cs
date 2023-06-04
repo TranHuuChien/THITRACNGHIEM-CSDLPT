@@ -85,7 +85,11 @@ namespace TN_CSDLPT
 
             try
             {
-                Program.KetNoi();
+                
+                if(Program.KetNoi() == 0)
+                {
+                    return;
+                }
             }
             catch(Exception ex) {
                 XtraMessageBox.Show(ex.Message, "Không thể kết nối!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -113,7 +117,7 @@ namespace TN_CSDLPT
                         return;
                     }*/
 
-
+                    Program.userName = txtTaiKhoan.Text;
                     Program.AuthHoten = Program.myReader.GetString(0) + " " + Program.myReader.GetString(1);
                     //Program.AuthGroup = Program.myReader.GetString(2);
                     Program.ServerLogin = Program.SVLogin;
@@ -124,6 +128,7 @@ namespace TN_CSDLPT
                 catch(Exception ex )
                 {
                     MessageBox.Show("Lỗi khi đăng nhập sinh viên , bạn hãy kiểm tra lại" + ex, "Thông báo", MessageBoxButtons.OK);
+                    return;
                 }
 
             }
@@ -134,31 +139,31 @@ namespace TN_CSDLPT
                 try
                 {
                     Program.myReader = Program.ExecSqlDataReader(statement);
-
+                   
                 }
                 catch(Exception ex)
                 {
-                    MessageBox.Show("Lỗi khi đăng nhập , bạn hãy kiểm tra lại " + ex, "Thông báo", MessageBoxButtons.OK);
-                }
-                if (Program.myReader == null)
-                {
+                    MessageBox.Show("Lỗi khi đăng nhập "+ ex.Message , "Thông báo", MessageBoxButtons.OK);
+                    Program.myReader.Close();
                     return;
                 }
+         
+            
+               
 
                 Program.myReader.Read();
                 Program.userName = Program.myReader.GetString(0);
-
-                if (Convert.IsDBNull(Program.userName))
-                {
-                    MessageBox.Show("Tài khoản này không có quyền truy cập \n Hãy thử tài khoản khác", "Thông Báo", MessageBoxButtons.OK);
-                    return;
-                }
                 Program.AuthHoten = Program.myReader.GetString(1);
                 Program.AuthGroup = Program.myReader.GetString(2);
 
                 Program.myReader.Close();
                 Program.conn.Close();
 
+                if(Program.AuthGroup == "SINHVIEN")
+                {
+                    MessageBox.Show("Sinh viên đã sử dụng tài khoản sinh viên để đăng nhập vào giảng viên", "Thông báo", MessageBoxButtons.OK);
+                    return;
+                }    
 
                 //Program.frmChinh.MA.Text = "MÃ = " + Program.userName;
                 //Program.frmChinh.HOVATEN.Text = "Họ Tên : " + Program.mHoten;

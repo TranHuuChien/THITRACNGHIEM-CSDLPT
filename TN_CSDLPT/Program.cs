@@ -9,6 +9,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Windows.Forms;
+using TN_CSDLPT.Class;
 
 namespace TN_CSDLPT
 {
@@ -66,8 +67,16 @@ namespace TN_CSDLPT
         //
         public static string MaGVDaChon = "";
 
-        //
-        
+        // lưu danh sách các nhóm quyền
+        public static List<RoleClass> roles = new List<RoleClass> {
+                new RoleClass("TRUONG", "Nhóm Trường"),
+                new RoleClass("COSO", "Nhóm Cơ Sở"),
+                new RoleClass("GIANGVIEN", "Nhóm Giảng Viên")
+        };
+
+
+       
+        public static int id_baithi = 0;
         public static int KetNoi()
         {
             if (Program.conn != null && Program.conn.State == ConnectionState.Open) Program.conn.Close();
@@ -99,12 +108,13 @@ namespace TN_CSDLPT
             try
             {
                 myreader = sqlcmd.ExecuteReader();
+                
                 return myreader;
             }
             catch (SqlException e)
             {
-                Program.conn.Close();
                 MessageBox.Show("Lỗi SQL DATA READER" +e.Message);
+                Program.conn.Close();
                 return null;
             }
 

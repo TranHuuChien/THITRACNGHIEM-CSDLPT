@@ -78,6 +78,7 @@
             // 
             // cbx_CoSo
             // 
+            this.cbx_CoSo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbx_CoSo.FormattingEnabled = true;
             this.cbx_CoSo.Location = new System.Drawing.Point(201, 17);
             this.cbx_CoSo.Name = "cbx_CoSo";

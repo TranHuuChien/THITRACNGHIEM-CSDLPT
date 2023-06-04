@@ -43,6 +43,18 @@ namespace TN_CSDLPT
             cmbCoSo.DisplayMember = "TENCS";
             cmbCoSo.ValueMember = "TENSERVER";
             cmbCoSo.SelectedIndex = Program.mCoSo;
+
+            List<string> list = new List<string>();
+            list.Add("A");
+            list.Add("B");
+            list.Add("C");
+            cbbTrinhDo.DataSource = list;
+            cbbTrinhDo.SelectedIndex = 0;
+
+            if(Program.AuthGroup == "TRUONG")
+            {
+                cmbCoSo.Enabled = true;
+            }    
         }
 
         private void cmbCoSo_SelectedIndexChanged(object sender, EventArgs e)
@@ -92,9 +104,9 @@ namespace TN_CSDLPT
         {
             DataTable dt = new DataTable();
             dt = Program.ExecDataTable(cmd);
-            cmbTrinhDo.DataSource = dt;
-            cmbTrinhDo.DisplayMember = "TENTRINHDO";
-            cmbTrinhDo.ValueMember = "TRINHDO";
+            //cmbTrinhDo.DataSource = dt;
+            //cmbTrinhDo.DisplayMember = "TENTRINHDO";
+            //cmbTrinhDo.ValueMember = "TRINHDO";
 
         }
 
@@ -104,15 +116,16 @@ namespace TN_CSDLPT
             {
                 bdsGIAOVIEN_DANGKI.AddNew();
                 kiemtraTHEM = true;
+                pcNhapLieu.Enabled = true;
 
-                this.btnTHEM.Enabled = false;
-                this.btnXOA.Enabled = false;
-                this.btnGHI.Enabled = true;
-                this.btnTHOAT.Enabled = true;
-                cmbTrinhDo.Visible = true;
-                txtTrinhDo.Visible = true;
-
-                LayDSTrinhDo("SELECT TENTRINHDO = 'TRINH DO  ' + TRINHDO, TRINHDO FROM DBO.BODE GROUP BY TRINHDO");
+                btnTHEM.Enabled = false;
+                btnXOA.Enabled = false;
+                btnGHI.Enabled = true;
+                btnCancel.Enabled = true;
+                btnTHOAT.Enabled = false;
+                btnHoanTac.Enabled = false;
+                btnSua.Enabled = false;
+                
             }
             catch(Exception ex)
             {
@@ -140,11 +153,6 @@ namespace TN_CSDLPT
                 return false;
             }
 
-            if (txtTrinhDo.Text.Length == 0)
-            {
-                MessageBox.Show("Trình độ không được để trống !", "Thông báo", MessageBoxButtons.OK);
-                return false;
-            }
 
             if (dateNgayThi.Text.Length == 0)
             {
@@ -203,6 +211,7 @@ namespace TN_CSDLPT
         }
         private void btnGHI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            string hoantac = "";
             if(KiemTraDuLieu() == false)
             {
                 return;
@@ -212,29 +221,36 @@ namespace TN_CSDLPT
 
 
             // kiểm tra số câu thi có bị thiếu trong bộ đề không
-            string truyvan = "SELECT COUNT(CAUHOI) FROM BODE WHERE MAGV = '" + txtMaGV.Text + "'";
-            try
-            {
-                Program.myReader = Program.ExecSqlDataReader(truyvan);
-                if (Program.myReader == null)
-                {
-                    return;
-                }
+            //string truyvan = "SELECT COUNT(CAUHOI) FROM BODE WHERE MAGV = '" + txtMaGV.Text + "'";
+            //try
+            //{
+            //    Program.myReader = Program.ExecSqlDataReader(truyvan);
+            //    if (Program.myReader == null)
+            //    {
+            //        return;
+            //    }
 
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+            //}
+            //catch(Exception ex)
+            //{
+            //    MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
 
-            }
-            int socauhoi = int.Parse(Program.myReader.GetValue(0).ToString());
-            if(socauhoi < int.Parse(txtSoCauTHI.Text))
-            {
-                string socauthieu = string.Concat(int.Parse(txtSoCauTHI.Text) - socauhoi);
-                MessageBox.Show("Số câu thi yêu cầu vượt quá số câu hỏi trong bộ đề, thiếu " + socauthieu, "THÔNG BÁO", MessageBoxButtons.OK);
-                return;
-            }    
+            //}
+            //int socauhoi = int.Parse(Program.myReader.GetValue(0).ToString());
+            //if(socauhoi < int.Parse(txtSoCauTHI.Text))
+            //{
+            //    string socauthieu = string.Concat(int.Parse(txtSoCauTHI.Text) - socauhoi);
+            //    MessageBox.Show("Số câu thi yêu cầu vượt quá số câu hỏi trong bộ đề, thiếu " + socauthieu, "THÔNG BÁO", MessageBoxButtons.OK);
+            //    return;
+            //}    
+
+            DataRowView drv = (DataRowView)bdsGIAOVIEN_DANGKI[bdsGIAOVIEN_DANGKI.Position];
+            string trinhdo = drv["TRINHDO"].ToString();
+            string ngaythi = drv["NGAYTHI"].ToString();
+            string solan = drv["LAN"].ToString();
+            string socauthi = drv["SOCAUTHI"].ToString();
+            string thoigian = drv["THOIGIAN"].ToString();
 
             DialogResult dr = MessageBox.Show("Bạn có chắc ghi dữ liệu vào cơ sở dữ liệu ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if(dr == DialogResult.OK)
@@ -242,25 +258,33 @@ namespace TN_CSDLPT
                 // Trước khi nhấn nút ghi là thêm
                 if(kiemtraTHEM == true)
                 {
-
+                    hoantac = "delete from GIAOVIEN_DANGKY WHERE MAGV = '" + txtMaGV.Text.Trim() + "' AND MALOP = '" + txtMaLop.Text.Trim() + "' AND MAMH = '" + txtMaMH.Text.Trim() + "'" ;
                 }
                 //trước khi nhấn nút ghi là sửa
                 else
                 {
-
+                    
+                    hoantac = "UPDATE GIAOVIEN_DANGKY SET TRINHDO = '" + trinhdo + "', NGAYTHI = '" + ngaythi
+                    + "', LAN = '" + solan + "', SOCAUTHI = '" + socauthi + "', THOIGIAN = '" + thoigian + "'";
                 }
 
-                //undo.Push(caulenhHoanTac);
+                undo.Push(hoantac);
                 this.bdsGIAOVIEN_DANGKI.EndEdit();
                 this.gIAOVIEN_DANGKYTableAdapter.Update(this.dataSet.GIAOVIEN_DANGKY);
 
                 MessageBox.Show("Ghi thành công", "Thông báo", MessageBoxButtons.OK);
+                btnTHEM.Enabled = true;
+                btnXOA.Enabled = true;
+                btnGHI.Enabled = false;
+                btnCancel.Enabled = false;
+                btnTHOAT.Enabled = true;
+                btnHoanTac.Enabled = true;
+                btnSua.Enabled = true;
 
+                kiemtraTHEM = false;
+                pcNhapLieu.Enabled = false;
             }
-            btnTHEM.Enabled = true;
-            btnGHI.Enabled = true;
-            btnXOA.Enabled = true;
-            kiemtraTHEM = false;
+            
 
         }
 
@@ -286,6 +310,14 @@ namespace TN_CSDLPT
                     MessageBox.Show("Xóa thành công ", "Thông báo", MessageBoxButtons.OK);
                     // lưu câu lệnh để hoàn tác
                     undo.Push(caulenhhoantac);
+                    btnTHEM.Enabled = true;
+                    btnXOA.Enabled = true;
+                    btnGHI.Enabled = false;
+                    btnCancel.Enabled = false;
+                    btnTHOAT.Enabled = false;
+                    btnHoanTac.Enabled = true;
+                    btnSua.Enabled = true;
+
 
                 }
                 catch (Exception ex)
@@ -323,6 +355,64 @@ namespace TN_CSDLPT
         
 
         private void cmbTrinhDo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSua_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            pcNhapLieu.Enabled = true;
+            kiemtraTHEM = false;
+            btnTHEM.Enabled = false;
+            btnXOA.Enabled = false;
+            btnGHI.Enabled = true;
+            btnCancel.Enabled = true;
+            btnTHOAT.Enabled = false;
+            btnHoanTac.Enabled = false;
+            btnSua.Enabled = false;
+        }
+
+        private void btnCancel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            pcNhapLieu.Enabled = false;
+            btnTHEM.Enabled = true;
+            btnXOA.Enabled = true;
+            btnGHI.Enabled = false;
+            btnCancel.Enabled = false;
+            btnTHOAT.Enabled = false;
+            btnHoanTac.Enabled = true;
+            btnSua.Enabled = true;
+            if (kiemtraTHEM == true)
+            {
+                bdsGIAOVIEN_DANGKI.RemoveCurrent();
+            }
+           
+        }
+
+        private void btnHoanTac_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            if (undo.Count == 0)
+            {
+                MessageBox.Show("Không còn thao tác nào để khôi phục dữ liệu ", "Thông báo", MessageBoxButtons.OK);
+                
+                return;
+            }
+            bdsGIAOVIEN_DANGKI.CancelEdit();
+            String caulenhHoanTac = undo.Pop().ToString();
+            int n = Program.ExecSqlNonQuery(caulenhHoanTac);
+            //Console.WriteLine(caulenhHoanTac + n.ToString());
+            try
+            {
+                this.gIAOVIEN_DANGKYTableAdapter.Connection.ConnectionString = Program.connstr;
+                this.gIAOVIEN_DANGKYTableAdapter.Fill(this.dataSet.GIAOVIEN_DANGKY);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Thông báo làm mới", MessageBoxButtons.OK);
+            }
+        }
+
+        private void tHOIGIANLabel_Click(object sender, EventArgs e)
         {
 
         }

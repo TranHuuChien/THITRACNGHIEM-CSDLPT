@@ -89,7 +89,7 @@
             this.tableAdapterManager.LOPTableAdapter = null;
             this.tableAdapterManager.MONHOCTableAdapter = null;
             this.tableAdapterManager.SINHVIENTableAdapter = null;
-            this.tableAdapterManager.SP_LAY_DS_LOP_THEO_KHOATableAdapter = null;
+     
             this.tableAdapterManager.UpdateOrder = TN_CSDLPT.DataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             // 
             // sP_LAY_DANH_SACH_LOPGridControl

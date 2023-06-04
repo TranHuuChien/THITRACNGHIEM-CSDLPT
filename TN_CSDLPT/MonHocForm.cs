@@ -156,20 +156,20 @@ namespace TN_CSDLPT
                 vitri = bdsMONHOC.Position;
                 this.panelNhapLieu.Enabled = true;
                 kiemtraThemMoi = true;
-                this.gcMonHoc.Enabled = false;
-                // step 2 : nhay xuong cuoi them 1 dong moi
+               
+                
                 bdsMONHOC.AddNew();
 
-                this.txtMaMonHoc.Enabled = true;
-                this.txtTenMonHoc.Enabled = true;
+                panelNhapLieu.Enabled=true;
 
-                this.btnTHEM.Enabled = false;
-                this.btnXOA.Enabled = false;
-                this.btnGHI.Enabled = true;
-
-                this.btnHOANTAC.Enabled = true;
-                this.btnLAMMOI.Enabled = false;
-                this.btnTHOAT.Enabled = false;
+                btnTHEM.Enabled = false;
+                btnXOA.Enabled = false;
+                btnGHI.Enabled = true;
+                btnSUA.Enabled = false;
+                btnCANCEL.Enabled = true;
+                btnHOANTAC.Enabled = false;
+                btnLAMMOI.Enabled = false;
+                btnTHOAT.Enabled = false;
 
             }
             catch(Exception ex)
@@ -196,9 +196,9 @@ namespace TN_CSDLPT
                 txtMaMonHoc.Focus();
                 return false;
             }
-            if (txtMaMonHoc.Text.Length > 10)
+            if (txtMaMonHoc.Text.Length > 5)
             {
-                MessageBox.Show("Mã môn học không được quá 10 kí tự", "Thông báo", MessageBoxButtons.OK);
+                MessageBox.Show("Mã môn học không được quá 5 kí tự", "Thông báo", MessageBoxButtons.OK);
                 txtMaMonHoc.Focus();
                 return false;
             }
@@ -227,6 +227,7 @@ namespace TN_CSDLPT
 
         private void btnGHI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            int KETQUA = 0;
             bool kqKiemtra = KiemTraDuLieuDauVao();
             if (kqKiemtra == false)
             {
@@ -240,28 +241,31 @@ namespace TN_CSDLPT
 
 
 
-            String truyvan = "DECLARE @kq INT " + "EXEC @kq= SP_KiemTraMaMonHoc '" + maMonHoc + "' " + "select 'Value' =  @kq";
-            try
+            if(kiemtraThemMoi == true)
             {
-                Program.myReader = Program.ExecSqlDataReader(truyvan);
-                if (Program.myReader == null)
+                String truyvan = "DECLARE @kq INT " + "EXEC @kq= SP_KiemTraMaMonHoc '" + maMonHoc + "' " + "select 'Value' =  @kq";
+                try
                 {
+                    Program.myReader = Program.ExecSqlDataReader(truyvan);
+                    if (Program.myReader == null)
+                    {
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            Program.myReader.Read();
-            int KETQUA = int.Parse(Program.myReader.GetValue(0).ToString());
+                Program.myReader.Read();
+                KETQUA = int.Parse(Program.myReader.GetValue(0).ToString());
 
-            Program.myReader.Close();
+                Program.myReader.Close();
+            }    
 
-            if (KETQUA == 1 && kiemtraThemMoi == true)
+            if (KETQUA == 1)
             {
-                MessageBox.Show("Mã vật tư này đã được sử dụng !", "Thông báo", MessageBoxButtons.OK);
+                MessageBox.Show("Mã môn học này đã được sử dụng !", "Thông báo", MessageBoxButtons.OK);
                 kiemtraThemMoi = false;
                 return;
 
@@ -288,12 +292,19 @@ namespace TN_CSDLPT
                     this.bdsMONHOC.EndEdit();
                     this.mONHOCTableAdapter.Update(this.DataSet.MONHOC);
                     
-                    MessageBox.Show("Ghi thành công", "Thông báo", MessageBoxButtons.OK);
-                    btnTHEM.Enabled = btnXOA.Enabled = btnHOANTAC.Enabled = btnLAMMOI.Enabled = true;
-                    btnGHI.Enabled = true;
+                    MessageBox.Show("Ghi thành công",
+                     "Thông báo", MessageBoxButtons.OK);
+                   
+                    panelNhapLieu.Enabled = false;
+                    kiemtraThemMoi = false;
+                    btnTHEM.Enabled = true;
+                    btnXOA.Enabled = true;
+                    btnGHI.Enabled = false;
+                    btnSUA.Enabled = true;
+                    btnCANCEL.Enabled = false;
+                    btnHOANTAC.Enabled = true;
+                    btnLAMMOI.Enabled = true;
                     btnTHOAT.Enabled = true;
-                    txtMaMonHoc.Enabled = txtTenMonHoc.Enabled = true;
-                    this.gcMonHoc.Enabled = true;
 
                 }
 
@@ -378,11 +389,16 @@ namespace TN_CSDLPT
 
                     // lưu câu lệnh để hoàn tác
                     undo.Push(cautruyvanHoanTac);
-                    btnTHEM.Enabled = btnXOA.Enabled = btnHOANTAC.Enabled = btnLAMMOI.Enabled = true;
-                    btnGHI.Enabled = true;
+                    panelNhapLieu.Enabled = false;
+
+                    btnTHEM.Enabled = true;
+                    btnXOA.Enabled = true;
+                    btnGHI.Enabled = false;
+                    btnSUA.Enabled = true;
+                    btnCANCEL.Enabled = false;
+                    btnHOANTAC.Enabled = true;
+                    btnLAMMOI.Enabled = true;
                     btnTHOAT.Enabled = true;
-                    txtMaMonHoc.Enabled = txtTenMonHoc.Enabled = true;
-                    this.gcMonHoc.Enabled = true;
 
                 }
                 catch (Exception ex)
@@ -412,24 +428,18 @@ namespace TN_CSDLPT
 
         private void btnHOANTAC_ItemClick_1(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (kiemtraThemMoi == true && this.btnTHEM.Enabled == false)
-            {
-                kiemtraThemMoi = false;
-                txtMaMonHoc.Enabled = false;
-                txtTenMonHoc.Enabled = false;
+            
+                panelNhapLieu.Enabled = false;
 
-                btnXOA.Enabled = btnTHEM.Enabled = btnGHI.Enabled = true;
-                btnHOANTAC.Enabled = false;
-                btnLAMMOI.Enabled = btnTHOAT.Enabled = true;
-
-                //this.gridControlMonHoc.Enabled = true;
-                panelNhapLieu.Enabled = true;
-                bdsMONHOC.CancelEdit();
-                bdsMONHOC.RemoveCurrent();
-                bdsMONHOC.Position = vitri;
-                MessageBox.Show("Bạn đang thêm Môn học hãy thực hiện xong", "Thông báo", MessageBoxButtons.OK);
-                return;
-            }
+                btnTHEM.Enabled = true;
+                btnXOA.Enabled = true;
+                btnGHI.Enabled = false;
+                btnSUA.Enabled = true;
+                btnCANCEL.Enabled = false;
+                btnHOANTAC.Enabled = true;
+                btnLAMMOI.Enabled = true;
+                btnTHOAT.Enabled = true;
+                
             if (undo.Count == 0)
             {
                 MessageBox.Show("Không còn thao tác nào để khôi phục dữ liệu ", "Thông báo", MessageBoxButtons.OK);
@@ -449,6 +459,40 @@ namespace TN_CSDLPT
         private void btnTHOAT_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             this.Close();
-        }   
+        }
+
+        private void btnSUA_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+
+            // do có chức năng hoàn tác nên không thể cho sửa khóa chính vì để lấy nó làm mốc
+            panelNhapLieu.Enabled = true;
+            txtMaMonHoc.Enabled = false;
+
+            btnTHEM.Enabled = false;
+            btnXOA.Enabled = false;
+            btnGHI.Enabled = true;
+            btnSUA.Enabled = false;
+            btnCANCEL.Enabled = true;
+            btnHOANTAC.Enabled = false;
+            btnLAMMOI.Enabled = false;
+            btnTHOAT.Enabled = false;
+        }
+
+        private void btnCANCEL_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            panelNhapLieu.Enabled = false;
+            if(kiemtraThemMoi == true)
+            {
+                bdsMONHOC.RemoveCurrent();
+            }    
+            btnTHEM.Enabled = true;
+            btnXOA.Enabled = true;
+            btnGHI.Enabled = false;
+            btnSUA.Enabled = true;
+            btnCANCEL.Enabled = false;
+            btnHOANTAC.Enabled = true;
+            btnLAMMOI.Enabled = true;
+            btnTHOAT.Enabled = true;
+        }
     }
 }

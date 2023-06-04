@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TN_CSDLPT.Subform;
 
 namespace TN_CSDLPT
 {
@@ -80,7 +81,6 @@ namespace TN_CSDLPT
                 this.btnSinhVien.Enabled = true;
                 this.btnBODE.Enabled = false;
                 this.btnDANGKI_THI.Enabled = true;
-         
             }    
 
             else if(Program.AuthGroup == "GIANGVIEN")
@@ -97,6 +97,7 @@ namespace TN_CSDLPT
             {
                 rib_HeThong.Visible = rib_NghiepVu.Visible = true;
                 btnTHI.Enabled = true;
+                btnXemLaiBai.Enabled = true;
             }
 
 
@@ -120,7 +121,7 @@ namespace TN_CSDLPT
         }
         private void btn_TaoTaiKhoan_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Form f = this.CheckExists(typeof(frmDangNhap));
+            Form f = this.CheckExists(typeof(frmTaoTaiKhoan));
             if (f != null)
             {
                 f.Activate();
@@ -274,6 +275,29 @@ namespace TN_CSDLPT
         private void btnThoat_ItemClick(object sender, ItemClickEventArgs e)
         {
             this.Dispose();
+        }
+
+        private void btnGiangVien_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = this.CheckExists(typeof(frmGiangVien));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+
+                frmGiangVien gv = new frmGiangVien();
+                gv.MdiParent = this;
+                gv.Show();
+            }
+        }
+
+        private void btnXemLaiBai_ItemClick(object sender, ItemClickEventArgs e)
+        {
+           frmXemLaiBAITHI baithi = new frmXemLaiBAITHI();
+            baithi.MdiParent = this;
+            baithi.Show();
         }
     }
 }
