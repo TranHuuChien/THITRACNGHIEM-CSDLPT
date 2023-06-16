@@ -82,5 +82,13 @@ namespace TN_CSDLPT.Subform
 
         }
 
+        private void btnChon_Click_1(object sender, EventArgs e)
+        {
+            DataRowView drv = ((DataRowView)(sP_LAY_DANH_SACH_LOPBindingSource.Current));
+            malop = drv["MALOP"].ToString().Trim();
+            Program.MaLopDuocChon = malop;
+            this.Close();
+
+        }
     }
 }

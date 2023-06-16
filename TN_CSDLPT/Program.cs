@@ -74,7 +74,7 @@ namespace TN_CSDLPT
                 new RoleClass("GIANGVIEN", "Nhóm Giảng Viên")
         };
 
-
+        //public static MainForm main = new MainForm();
        
         public static int id_baithi = 0;
         public static int KetNoi()
@@ -113,7 +113,7 @@ namespace TN_CSDLPT
             }
             catch (SqlException e)
             {
-                MessageBox.Show("Lỗi SQL DATA READER" +e.Message);
+                MessageBox.Show(e.Message, "Thông báo", MessageBoxButtons.OK);
                 Program.conn.Close();
                 return null;
             }

@@ -38,6 +38,7 @@ namespace TN_CSDLPT
 
         private void frmSinhVien_Load(object sender, EventArgs e)
         {
+            
             // TODO: This line of code loads data into the 'DataSet.LOP' table. You can move, or remove it, as needed.
             DataSet.EnforceConstraints = false;
             this.lOPTableAdapter.Connection.ConnectionString = Program.connstr;
@@ -56,21 +57,37 @@ namespace TN_CSDLPT
             cmbCoSo.SelectedIndex = Program.mCoSo;
 
 
-            if(Program.AuthGroup == "TRUONG")
+            if (Program.AuthGroup == "TRUONG")
             {
                 cmbCoSo.Enabled = true;
                 btnLAMMOI.Enabled = true;
                 btnTHOAT.Enabled = true;
                 btnTHEM.Enabled = btnXOA.Enabled = btnGHI.Enabled = btnHOANTAC.Enabled = false;
             }
-            else if(Program.AuthGroup == "COSO")
+            else if (Program.AuthGroup == "COSO")
             {
                 cmbCoSo.Enabled = false;
                 btnLAMMOI.Enabled = true;
                 btnTHOAT.Enabled = true;
-                btnTHEM.Enabled = btnXOA.Enabled = btnGHI.Enabled = btnHOANTAC.Enabled = true;
+                btnTHEM.Enabled = true;
+
+                btnXOA.Enabled = true;
+                btnGHI.Enabled = true;
+                btnGHI.Enabled = false;
+                btnCANCEL.Enabled = false;
+               btnHOANTAC.Enabled = true;
             }
-            
+
+            if (bdsSINHVIEN.Count == 0)
+            {
+                btnXOA.Enabled = false;
+                btnSUA.Enabled = false;
+            }
+            else
+            {
+                btnXOA.Enabled = true;
+                btnSUA.Enabled = true;
+            }
 
         }
 
@@ -118,15 +135,13 @@ namespace TN_CSDLPT
 
         private void btnTHEM_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            //lấy vị trí hiện tại của con trỏ để tiến hành undo
-
-            vitri = bdsSINHVIEN.Position;
-            //this.panelNhapLieu.Enabled = true;
+            
             kiemtraThemMoi = true;
 
             // step 2 : nhay xuong cuoi them 1 dong moi
             bdsSINHVIEN.AddNew();
-            
+            pcSinhVien.Enabled = false;
+            txtMaSV.Enabled = true;
             panelNhapLieu.Enabled = true;
             this.btnTHEM.Enabled = false;
             this.btnXOA.Enabled = false;
@@ -134,6 +149,7 @@ namespace TN_CSDLPT
             this.btnHOANTAC.Enabled = false;
             this.btnLAMMOI.Enabled = false;
             this.btnTHOAT.Enabled = false;
+            btnSUA.Enabled = false;
             btnCANCEL.Enabled = true;
 
         }
@@ -154,10 +170,11 @@ namespace TN_CSDLPT
                 return;
             }
 
-
+            DataRowView drv = ((DataRowView)bdsSINHVIEN[bdsSINHVIEN.Position]);
+            string MaLop = drv["MALOP"].ToString();
             string caulenhhoantac = "INSERT INTO DBO.SINHVIEN(MASV, HO, TEN ,NGAYSINH, DIACHI, MALOP, PASSWORD)" +
                 " VALUES( '" + txtMaSV.Text.Trim() + "','" + txtHO.Text.Trim() + "','" + txtTEN.Text.Trim() + "','" +
-                txtNgaySinh.Text.Trim() + "','"+txtDiaChi.Text.Trim()+"','" + txtMaLop.Text.Trim() + "','" + txtPassword.Text.Trim() + "')";
+                txtNgaySinh.Text.Trim() + "','"+txtDiaChi.Text.Trim()+"','" + MaLop + "','" + txtPassword.Text.Trim() + "')";
             DialogResult dr = MessageBox.Show("Bạn có chắc xóa không ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if (dr == DialogResult.OK)
             {
@@ -196,7 +213,7 @@ namespace TN_CSDLPT
 
         public bool kiemtradulieu()
         {
-            if(txtMaSV.Text == "") {
+            if(txtMaSV.Text.Trim() == "") {
                 MessageBox.Show("Mã sinh viên không được trống", "Thông báo", MessageBoxButtons.OK);
                 txtMaSV.Focus();
                 return false;
@@ -215,18 +232,18 @@ namespace TN_CSDLPT
             }
 
             // kiểm tra họ
-            if (txtHO.Text == "")
+            if (txtHO.Text.Trim() == "")
             {
                 MessageBox.Show("Họ không được trống", "Thông báo", MessageBoxButtons.OK);
                 txtHO.Focus();
                 return false;
             }
-            if (Regex.IsMatch(txtHO.Text, @"^[a-zA-Z0-9 ]+$") == false)
+            /*if (Regex.IsMatch(txtHO.Text, @"^[a-zA-Z0-9 ]+$") == false)
             {
                 MessageBox.Show("Họ chỉ có chữ cái và số và khoảng trắng", "Thông báo", MessageBoxButtons.OK);
                 txtHO.Focus();
                 return false;
-            }
+            }*/
             if (txtHO.Text.Length > 50)
             {
                 MessageBox.Show("Họ không được quá 50 kí tự", "Thông báo", MessageBoxButtons.OK);
@@ -235,18 +252,18 @@ namespace TN_CSDLPT
             }
 
             // kiểm tra tên
-            if (txtTEN.Text == "")
+            if (txtTEN.Text.Trim() == "")
             {
                 MessageBox.Show("Tên không được trống", "Thông báo", MessageBoxButtons.OK);
                 txtTEN.Focus();
                 return false;
             }
-            if (Regex.IsMatch(txtTEN.Text, @"^[a-zA-Z0-9]+$") == false)
+            /*if (Regex.IsMatch(txtTEN.Text, @"^[a-zA-Z0-9]+$") == false)
             {
                 MessageBox.Show("Tên chỉ có chữ cái và số ", "Thông báo", MessageBoxButtons.OK);
                 txtTEN.Focus();
                 return false;
-            }
+            }*/
             if (txtTEN.Text.Length > 10)
             {
                 MessageBox.Show("Tên không được quá 10 kí tự", "Thông báo", MessageBoxButtons.OK);
@@ -255,18 +272,18 @@ namespace TN_CSDLPT
             }
 
             //kiểm tra địa chỉ
-            if (txtDiaChi.Text == "")
+            if (txtDiaChi.Text.Trim() == "")
             {
                 MessageBox.Show("Địa chỉ không được trống", "Thông báo", MessageBoxButtons.OK);
                 txtDiaChi.Focus();
                 return false;
             }
-            if (Regex.IsMatch(txtDiaChi.Text, @"^[a-zA-Z0-9 ]+$") == false)
+            /*if (Regex.IsMatch(txtDiaChi.Text, @"^[a-zA-Z0-9 ]+$") == false)
             {
                 MessageBox.Show("Địa chỉ chỉ có chữ cái và số và khoẳng trắng", "Thông báo", MessageBoxButtons.OK);
                 txtDiaChi.Focus();
                 return false;
-            }
+            }*/
             if (txtDiaChi.Text.Length > 50)
             {
                 MessageBox.Show("Địa chỉ không được quá 50 kí tự", "Thông báo", MessageBoxButtons.OK);
@@ -296,11 +313,11 @@ namespace TN_CSDLPT
             }
             string maSv = txtMaSV.Text.Trim();
             DataRowView drv = ((DataRowView)bdsSINHVIEN[bdsSINHVIEN.Position]);
+            string MaLop = drv["MALOP"].ToString();
 
 
 
-
-            /*String truyvan = "DECLARE @kq INT " + "EXEC @kq= SP_KiemTraMaSinhVien '" + maSv + "' " + "select 'Value' =  @kq";
+            String truyvan = "DECLARE @kq INT " + "EXEC @kq= SP_KT_MASV_TONTAI '" + maSv + "' " + "select 'Value' =  @kq";
             try
             {
                 Program.myReader = Program.ExecSqlDataReader(truyvan);
@@ -314,10 +331,12 @@ namespace TN_CSDLPT
                 MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            Program.myReader.Read();*/
+            Program.myReader.Read();
+            int KETQUA = int.Parse(Program.myReader.GetValue(0).ToString());
 
-            int KETQUA = 0;
-            if (KETQUA == 1 && kiemtraThemMoi == true)
+            Program.myReader.Close();
+
+            if (KETQUA == 1)
             {
                 MessageBox.Show("Mã vật tư này đã được sử dụng !", "Thông báo", MessageBoxButtons.OK);
                 kiemtraThemMoi = false;
@@ -329,9 +348,6 @@ namespace TN_CSDLPT
                 DialogResult dr = MessageBox.Show("Bạn có chắc ghi dữ liệu vào cơ sở dữ liệu ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (dr == DialogResult.OK)
                 {
-                    btnTHEM.Enabled = btnXOA.Enabled = btnHOANTAC.Enabled = btnLAMMOI.Enabled = true;
-                    btnGHI.Enabled = true;
-                    
                     string caulenhHoanTac = "";
                     // TRƯỚC KHI NHẤN NÚT GHI LÀ NÚT THÊM
                     if (kiemtraThemMoi == true)
@@ -343,23 +359,25 @@ namespace TN_CSDLPT
                     {
                         caulenhHoanTac = "update DBO.MONHOC SET " + "TEN = '" + txtTEN.Text.Trim()+ "', HO = '"+txtHO.Text.Trim()
                        +"', NGAYSINH = '"+txtNgaySinh.Text.Trim() + "', DIACHI = '" + txtDiaChi.Text.Trim()
-                       +"', MALOP = '" + txtMaLop.Text.Trim() + "', PASSWORD = '"+ txtPassword.Text.Trim() +"'"
+                       +"', MALOP = '" + MaLop + "', PASSWORD = '"+ txtPassword.Text.Trim() +"'"
                        +"WHERE MAMH = '" + txtMaSV.Text.Trim() + "'";
                     }
 
                     undo.Push(caulenhHoanTac);
                     this.bdsSINHVIEN.EndEdit();
-                    //string insertSinhVien = "INSERT INTO SINHVIEN(MASV, HO, TEN, NGAYSINH, DIACHI, MALOP, PASSWORD) VALUES( "
-                    //+ txtMaSV.Text.Trim() + ",'" + txtHO.Text.Trim() + "','" + txtTEN.Text.Trim() + "','"
-                    //+ txtNgaySinh.Text.Trim() + "','" + txtDiaChi.Text.Trim() + "','" + txtMaLop.Text.Trim() + "','" + txtPassword.Text.Trim() +  "')";
-                    //this.sINHVIENTableAdapter.Update(this.DataSet.SINHVIEN);
+                    this.sINHVIENTableAdapter.Update(this.DataSet.SINHVIEN);
+
+                    txtMaSV.Enabled = true;
                     panelNhapLieu.Enabled = false;
+
+                    pcSinhVien.Enabled = true;
                     this.btnTHEM.Enabled = true;
                     this.btnXOA.Enabled = true;
                     this.btnGHI.Enabled = false;
                     this.btnHOANTAC.Enabled = true;
                     this.btnLAMMOI.Enabled = true;
                     this.btnTHOAT.Enabled = true;
+                    btnSUA.Enabled = true;
                     btnCANCEL.Enabled = false;
 
                     MessageBox.Show("Ghi thành công", "Thông báo", MessageBoxButtons.OK);
@@ -369,10 +387,7 @@ namespace TN_CSDLPT
 
             }
             kiemtraThemMoi = false;
-            btnTHOAT.Enabled = true;
-            return;
-
-
+            pcSinhVien.Enabled = true;
         }
 
         private void btnHOANTAC_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -417,7 +432,7 @@ namespace TN_CSDLPT
 
         private void btnSearchSinhVien_Click(object sender, EventArgs e)
         {
-            DataRowView drv = ((DataRowView)(bdsSP_Lop.Current));
+            DataRowView drv = ((DataRowView)(bdsLop.Current));
             maLop = drv["MALOP"].ToString().Trim();
 
             this.sINHVIENTableAdapter.Connection.ConnectionString = Program.connstr;
@@ -438,17 +453,54 @@ namespace TN_CSDLPT
             this.btnLAMMOI.Enabled = true;
             this.btnTHOAT.Enabled = true;
             btnCANCEL.Enabled = false;
-
+            pcSinhVien.Enabled = true;
         }
 
         private void btnLAMMOI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            if (bdsSINHVIEN.Count == 0)
+            {
+                btnXOA.Enabled = false;
+                btnSUA.Enabled = false;
+            }
+            else
+            {
+                btnXOA.Enabled = true;
+                btnSUA.Enabled = true;
+            }
 
         }
 
-        private void dIACHILabel_Click(object sender, EventArgs e)
+        
+        private void btnSUA_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            panelNhapLieu.Enabled = true;
+            pcSinhVien.Enabled = false;
+            txtMaSV.Enabled = false;
+            kiemtraThemMoi = false;
 
+            btnTHEM.Enabled = false;
+            btnXOA.Enabled = false;
+            btnGHI.Enabled = true;
+            btnSUA.Enabled = false;
+            btnCANCEL.Enabled = true;
+            btnHOANTAC.Enabled = false;
+            btnLAMMOI.Enabled = false;
+            btnTHOAT.Enabled = false;
+        }
+
+        private void lOPGridControl_Click(object sender, EventArgs e)
+        {
+            if (bdsSINHVIEN.Count == 0)
+            {
+                btnXOA.Enabled = false;
+                btnSUA.Enabled = false;
+            }
+            else
+            {
+                btnXOA.Enabled = true;
+                btnSUA.Enabled = true;
+            }
         }
     }
 }

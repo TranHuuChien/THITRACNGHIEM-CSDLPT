@@ -85,7 +85,6 @@
             this.tableAdapterManager.LOPTableAdapter = null;
             this.tableAdapterManager.MONHOCTableAdapter = null;
             this.tableAdapterManager.SINHVIENTableAdapter = null;
-           
             this.tableAdapterManager.UpdateOrder = TN_CSDLPT.DataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             // 
             // gIAOVIENGridControl
@@ -95,7 +94,7 @@
             this.gIAOVIENGridControl.Location = new System.Drawing.Point(0, 160);
             this.gIAOVIENGridControl.MainView = this.gridView1;
             this.gIAOVIENGridControl.Name = "gIAOVIENGridControl";
-            this.gIAOVIENGridControl.Size = new System.Drawing.Size(816, 349);
+            this.gIAOVIENGridControl.Size = new System.Drawing.Size(914, 349);
             this.gIAOVIENGridControl.TabIndex = 2;
             this.gIAOVIENGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -111,27 +110,33 @@
             // 
             // colMAGV
             // 
+            this.colMAGV.Caption = "MÃ GIẢNG VIÊN";
             this.colMAGV.FieldName = "MAGV";
             this.colMAGV.MinWidth = 30;
             this.colMAGV.Name = "colMAGV";
+            this.colMAGV.OptionsColumn.AllowEdit = false;
             this.colMAGV.Visible = true;
             this.colMAGV.VisibleIndex = 0;
             this.colMAGV.Width = 112;
             // 
             // colHO
             // 
+            this.colHO.Caption = "HỌ";
             this.colHO.FieldName = "HO";
             this.colHO.MinWidth = 30;
             this.colHO.Name = "colHO";
+            this.colHO.OptionsColumn.AllowEdit = false;
             this.colHO.Visible = true;
             this.colHO.VisibleIndex = 1;
             this.colHO.Width = 112;
             // 
             // colTEN
             // 
+            this.colTEN.Caption = "TÊN";
             this.colTEN.FieldName = "TEN";
             this.colTEN.MinWidth = 30;
             this.colTEN.Name = "colTEN";
+            this.colTEN.OptionsColumn.AllowEdit = false;
             this.colTEN.Visible = true;
             this.colTEN.VisibleIndex = 2;
             this.colTEN.Width = 112;
@@ -160,7 +165,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 509);
+            this.ClientSize = new System.Drawing.Size(914, 509);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.gIAOVIENGridControl);

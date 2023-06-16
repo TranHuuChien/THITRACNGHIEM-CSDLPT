@@ -36,9 +36,19 @@ namespace TN_CSDLPT
             this.dataSet.EnforceConstraints = false;
             this.cT_BAITHITableAdapter.Connection.ConnectionString = Program.connstr;
             this.cT_BAITHITableAdapter.Fill(this.dataSet.CT_BAITHI);
-            // TODO: This line of code loads data into the 'dataSet.BODE' table. You can move, or remove it, as needed.
-            this.bODETableAdapter.Connection.ConnectionString = Program.connstr;
-            this.bODETableAdapter.FillTheoGiangVien(this.dataSet.BODE, Program.userName);
+            
+            if(Program.AuthGroup =="GIANGVIEN")
+            {
+                // TODO: This line of code loads data into the 'dataSet.BODE' table. You can move, or remove it, as needed.
+                this.bODETableAdapter.Connection.ConnectionString = Program.connstr;
+                this.bODETableAdapter.FillTheoGiangVien(this.dataSet.BODE, Program.userName);
+            }
+            else if(Program.AuthGroup =="COSO" ||  Program.AuthGroup =="TRUONG")
+            {
+                this.bODETableAdapter.Connection.ConnectionString = Program.connstr;
+                this.bODETableAdapter.Fill(this.dataSet.BODE);
+
+            }
 
             cbbTrinhDo.Items.Add("A");
             cbbTrinhDo.Items.Add("B");
@@ -56,27 +66,25 @@ namespace TN_CSDLPT
             cmbCoSo.ValueMember = "TENSERVER";
             cmbCoSo.SelectedIndex = Program.mCoSo;
 
-            if (Program.AuthGroup == "TRUONG")
+            if (Program.AuthGroup == "TRUONG" || Program.AuthGroup == "COSO")
             {
-                cmbCoSo.Enabled = true;
-                
+
+                if(Program.AuthGroup == "TRUONG")
+                {
+                    cmbCoSo.Enabled = true;
+                }    
+                else if(Program.AuthGroup == "COSO")
+                {
+                    cmbCoSo.Enabled = false;
+                }    
                 this.btnTHEM.Enabled = this.btnXOA.Enabled = this.btnGHI.Enabled = this.btnHOANTAC.Enabled = false;
                 this.btnLAMMOI.Enabled = true;
                 this.panelNhapLieu.Enabled = false;
                 this.btnTHOAT.Enabled = true;
-
+                btnSUA.Enabled = false;
 
             }
-            // Nhóm COSO có toàn quyền trên 
-            else if (Program.AuthGroup == "COSO")
-            {
-               
-                cmbCoSo.Enabled = false;
-                this.btnTHEM.Enabled = this.btnXOA.Enabled = this.btnGHI.Enabled = this.btnHOANTAC.Enabled = true;
-                this.btnLAMMOI.Enabled = true;
-                this.panelNhapLieu.Enabled = true;
-                this.btnTHOAT.Enabled = true;
-            }
+            
         }
 
         private void btnTHEM_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)

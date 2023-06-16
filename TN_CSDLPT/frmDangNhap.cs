@@ -43,28 +43,12 @@ namespace TN_CSDLPT
                 txtPassword.Focus();
                 return;
             }
-            /*if (Regex.IsMatch(txtTaiKhoan.Text, @"^[a-zA-Z0-9]+$") == false)
-            {
-                MessageBox.Show("Tài khoản chỉ có chữ cái và số", "Thông báo", MessageBoxButtons.OK);
-                txtTaiKhoan.Focus();
-                return;
-            }
-            if (Regex.IsMatch(txtPassword.Text, @"^[a-zA-Z0-9]+$") == false)
-            {
-                MessageBox.Show("Mat khau chỉ có chữ cái và số", "Thông báo", MessageBoxButtons.OK);
-                txtPassword.Focus();
-                return;
-            }*/
-
             Program.serverName = cbx_CoSo.SelectedValue.ToString();
             Program.AuthServerName = cbx_CoSo.SelectedValue.ToString();
 
 
             Program.AuthLogin = txtTaiKhoan.Text.Trim();
             Program.AuthPassword = txtPassword.Text.Trim();
-
-            
-            
             if(radioButtonSinhVien.Checked)
             {
                 
@@ -109,17 +93,18 @@ namespace TN_CSDLPT
                         return;
                     }
                     Program.myReader.Read();
-
-                    /*if (Program.myReader.GetString(5) != Program.AuthPassword)
+                    string passwordDB = Program.myReader.GetString(5).Trim();
+                    if (passwordDB.Equals(txtPassword.Text.Trim())== false)
                     {
-                        MessageBox.Show("Thông tin mật khẩu sinh viên không hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Thông tin mật khẩu sinh viên không hợp lệ!" + Program.myReader.GetString(5), "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Program.myReader.Close();
                         return;
-                    }*/
+                    }
 
                     Program.userName = txtTaiKhoan.Text;
                     Program.AuthHoten = Program.myReader.GetString(0) + " " + Program.myReader.GetString(1);
                     //Program.AuthGroup = Program.myReader.GetString(2);
+                    // sử dụng tài khoản mặc định để login vào server
                     Program.ServerLogin = Program.SVLogin;
                     Program.ServerPassword = Program.SVPassword;
 
@@ -135,10 +120,14 @@ namespace TN_CSDLPT
 
             else
             {
-                string statement = "EXEC SP_Lay_Thong_Tin_LOGINNAME_Tu_Login '" + Program.userName + "'";// chạy câu lệnh sp 
+                string statement = "EXEC SP_Lay_Thong_Tin_LOGINNAME_Tu_Login '" + Program.ServerLogin + "'";// chạy câu lệnh sp 
                 try
                 {
                     Program.myReader = Program.ExecSqlDataReader(statement);
+                    if(Program.myReader == null)
+                    {
+                        return;
+                    }    
                    
                 }
                 catch(Exception ex)
@@ -148,11 +137,9 @@ namespace TN_CSDLPT
                     return;
                 }
          
-            
-               
-
                 Program.myReader.Read();
                 Program.userName = Program.myReader.GetString(0);
+
                 Program.AuthHoten = Program.myReader.GetString(1);
                 Program.AuthGroup = Program.myReader.GetString(2);
 
@@ -173,13 +160,8 @@ namespace TN_CSDLPT
             }
             /*Step 3*/
             Program.mCoSo = cbx_CoSo.SelectedIndex;
-            
-
-            
-
             Program.frmChinh.HienThiMenu();
-
-
+            
             this.Visible = false;
 
         }

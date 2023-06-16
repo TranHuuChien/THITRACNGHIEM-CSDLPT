@@ -79,10 +79,10 @@ namespace TN_CSDLPT.Subform
 
             string hql = "select STT, CT_BAITHI.CAUHOI,NOIDUNG,DAP_AN,DACHON FROM CT_BAITHI INNER JOIN BODE ON CT_BAITHI.CAUHOI = BODE.CAUHOI AND ID_BAITHI = " + id_baithi;
             dgvTraCuuBaiThi.DataSource = Program.ExecDataTable(hql);
-            /*foreach (DataGridViewRow row in dgvTraCuuBaiThi.Rows)
+            foreach (DataGridViewRow row in dgvTraCuuBaiThi.Rows)
             {
-                string DACHON = Convert.ToString(row.Cells[4].Value);
-                string DAPAN = Convert.ToString(row.Cells[5].Value);
+                string DACHON = Convert.ToString(row.Cells[3].Value);
+                string DAPAN = Convert.ToString(row.Cells[4].Value);
                 if (DAPAN.Equals(DACHON))
                 {
                     row.DefaultCellStyle.BackColor = Color.Green;
@@ -91,7 +91,7 @@ namespace TN_CSDLPT.Subform
                 {
                     row.DefaultCellStyle.BackColor = Color.Red;
                 }
-            }*/
+            }
         }
     }
 }

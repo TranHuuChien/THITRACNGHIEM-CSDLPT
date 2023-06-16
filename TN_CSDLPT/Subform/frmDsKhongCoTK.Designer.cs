@@ -137,6 +137,7 @@
             this.colMAGV.FieldName = "MAGV";
             this.colMAGV.MinWidth = 30;
             this.colMAGV.Name = "colMAGV";
+            this.colMAGV.OptionsColumn.AllowEdit = false;
             this.colMAGV.Visible = true;
             this.colMAGV.VisibleIndex = 0;
             this.colMAGV.Width = 112;
@@ -147,6 +148,7 @@
             this.colHO.FieldName = "HO";
             this.colHO.MinWidth = 30;
             this.colHO.Name = "colHO";
+            this.colHO.OptionsColumn.AllowEdit = false;
             this.colHO.Visible = true;
             this.colHO.VisibleIndex = 1;
             this.colHO.Width = 112;
@@ -157,13 +159,14 @@
             this.colTEN.FieldName = "TEN";
             this.colTEN.MinWidth = 30;
             this.colTEN.Name = "colTEN";
+            this.colTEN.OptionsColumn.AllowEdit = false;
             this.colTEN.Visible = true;
             this.colTEN.VisibleIndex = 2;
             this.colTEN.Width = 112;
             // 
             // btnChon
             // 
-            this.btnChon.Location = new System.Drawing.Point(201, 376);
+            this.btnChon.Location = new System.Drawing.Point(213, 376);
             this.btnChon.Name = "btnChon";
             this.btnChon.Size = new System.Drawing.Size(111, 44);
             this.btnChon.TabIndex = 2;
@@ -172,7 +175,7 @@
             // 
             // btnThoat
             // 
-            this.btnThoat.Location = new System.Drawing.Point(470, 376);
+            this.btnThoat.Location = new System.Drawing.Point(485, 376);
             this.btnThoat.Name = "btnThoat";
             this.btnThoat.Size = new System.Drawing.Size(92, 44);
             this.btnThoat.TabIndex = 3;

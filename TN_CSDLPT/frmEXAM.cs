@@ -14,6 +14,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 using TN_CSDLPT.Subform;
 using TN_CSDLPT.Class;
+using DevExpress.Xpo.DB.Helpers;
+using DevExpress.XtraEditors.Controls;
 
 namespace TN_CSDLPT
 {
@@ -21,8 +23,12 @@ namespace TN_CSDLPT
     {
         int iPhut;
         int iGiay;
-        Timer timer;
-        bool isSinhVien = false;
+        bool isActive = false;
+
+        string thoiGianThi = "";
+
+        bool isSinhVien = false;// kiểm tra nếu là sinh viên cho thi thật , giảng viên cho thi thử
+        
         int position = 0;// lưu lại vị trí các row bên trong datatable
         int index = 1;// tạo danh sách list câu hỏi tăng dần
         int slCauHoi = 0;
@@ -39,7 +45,7 @@ namespace TN_CSDLPT
         private void frmEXAM_Load(object sender, EventArgs e)
         {
             string truyvan = "SELECT MALOP, TENLOP FROM LOP WHERE MALOP = (SELECT MALOP FROM SINHVIEN WHERE MASV ='" + Program.AuthLogin + "')";
-
+            
             try
             {
                 Program.myReader = Program.ExecSqlDataReader(truyvan);
@@ -73,7 +79,7 @@ namespace TN_CSDLPT
            
 
             Program.myReader.Close();
-            string dsmohoc = "SELECT MAMH, TENMH FROM MONHOC WHERE MAMH IN (SELECT MAMH FROM GIAOVIEN_DANGKY) ";
+            string dsmohoc = "EXEC SP_DS_MON_HOC_DA_DKI_THI '" + Program.AuthLogin + "'";
             DataTable dt =  Program.ExecDataTable(dsmohoc);
             
             //while(Program.myReader.Read())
@@ -97,7 +103,7 @@ namespace TN_CSDLPT
         {
             string sPhut = "";
             string sGiay = "";
-            if(iPhut < 10)
+            if(iPhut <= 9)
             {
                 sPhut = "0" + iPhut.ToString();
             }
@@ -106,31 +112,73 @@ namespace TN_CSDLPT
                 sPhut = iPhut.ToString();
             }
 
-            if(iGiay < 10)
+            if(iGiay <= 9)
             {
                 sGiay ="0" +  iGiay.ToString();
+                iGiay++;
             }
             else
             {
+                if (iGiay >= 60)
+                {
+                    iGiay = 0;
+                    iPhut++;
+                }
                 sGiay = iGiay.ToString();
+                iGiay++;
             }
 
-            this.txtThoiGian.Text = sPhut + ":" + iGiay;
+            this.txtThoiGian.Text = sPhut + ":" + sGiay;
         }
-
-        private void timer1_Tick(object sender, EventArgs e)
+        private void btnStart_Click(object sender, EventArgs e)
         {
-            timer = new System.Windows.Forms.Timer();
-            
-            timer.Interval = 1000; //1s
-            timer.Start();
-
+            timer1.Interval = 100;
+            timer1.Start();
         }
+
+       
+        private void timer1_Tick_1(object sender, EventArgs e)
+        {
+            HienThiPhutGio();
+        }
+       
         private void btnLayDeThi_Click(object sender, EventArgs e)
         {
+            int KETQUA = 0;
+            string truyvan = "DECLARE @kq int EXEC @kq =  SP_KIEM_TRA_DA_THI_CHUA '"+ Program.AuthLogin +
+            "', '" + cbbMonHoc.SelectedValue.ToString() + "'," + cbbLanThi.SelectedValue.ToString() + "SELECT @kq";
+            //String truyvan = "DECLARE @kq INT " + "EXEC @kq= SP_KiemTraMaMonHoc '" + maMonHoc + "' " + "select 'Value' =  @kq";
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(truyvan);
+                if (Program.myReader == null)
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Program.myReader.Read();
+            KETQUA = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+
+            if(KETQUA == 0)
+            {
+                MessageBox.Show("Chưa đăng kí thi, vui lòng kiểm tra lại", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }    
+            else if(KETQUA == 1)
+            {
+                MessageBox.Show("Bạn đã thi rồi , vui lòng kiểm tra lại", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
 
             //string dscauhoi = "EXEC SP_LAY_CAU_HOI_NGAU_NHIEN_CHUAN 'TH04','001', 'AVCB',1";
-            string dscauhoi = "select top(10)CAUHOI, NOIDUNG, A,B, C,D,DAP_AN from BODE";
+            string dscauhoi1 = "EXEC SP_LAY_CAU_HOI_NGAU_NHIEN_CHUAN ;" + cbbMonHoc.SelectedValue.ToString() + "','" + Program.AuthLogin + "','" + cbbMonHoc.SelectedValue.ToString() + "'," + cbbLanThi.SelectedValue.ToString();
+            string dscauhoi = "SELECT TOP(10) CAUHOI, NOIDUNG, A,B, C,D,DAP_AN FROM BODE ORDER BY NEWID()";
             dtTracNghiem = Program.ExecDataTable(dscauhoi);
             slCauHoi = dtTracNghiem.Rows.Count;
             this.listCauHoi.Items.Clear();
@@ -148,9 +196,13 @@ namespace TN_CSDLPT
             ShowDataQuestion(position);
             pcHienThiChiTietCauHoi.Enabled = true;
 
+
+            //  thực hiện chức năng chạy thời gian
             iGiay = 0;
-            iPhut = 20;
-            HienThiPhutGio();
+            iPhut = 0;
+            timer1.Interval = 1000;
+            timer1.Start();
+           
         }
 
         private string GetSelectOption()
@@ -219,18 +271,10 @@ namespace TN_CSDLPT
 
         void ChangeColorQuestion()
         {
-            foreach (ListViewItem item in listCauHoi.Items)
-            {
-                if(item.Selected)
-                {
-                    item.BackColor = Color.Green;
-                }
-            }
+            
         }
         private void listCauHoi_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-            
             SaveSelectedOption();
             if (this.listCauHoi.SelectedIndex < 0) return;
 
@@ -246,11 +290,10 @@ namespace TN_CSDLPT
             
             // reset lại option
             Answer1.Checked = Answer2.Checked = Answer3.Checked = Answer4.Checked = false;
-
             bool flag =  LoadPrevSelectedOption();// thể hiện lại đáp áp các câu
             //if(flag== true)
             //{
-            //    listCauHoi.Items[prevPosition].BackColor = Color.Blue;
+            //    listCauHoi[1].BackColor = Color.Blue;
             //}    
             
 
@@ -296,29 +339,28 @@ namespace TN_CSDLPT
 
         private void btnCauCuoi_Click(object sender, EventArgs e)
         {
-            
             listCauHoi.SelectedIndex = dtTracNghiem.Rows.Count - 1;
         }
 
 
-        private bool Check()
+        private int Check()
         {
-            int i = 0;
-            foreach (DataRow dr in dtTracNghiem.Rows)
+            
+            int count = 0;
+            for (int i = 0 ; i < dtTracNghiem.Rows.Count;i++)
             {
                 if (dsDapAn[i]=="")
                 {
-                    return false;
-                }    
-                i++;
+                    count++;
+                }  
             }
-            return true;
+            return count - 1;
         }
         private void btnFinshTest_Click(object sender, EventArgs e)
         {
-            if(!Check()) 
+            if(Check()>0) 
             {
-                MessageBox.Show("Còn để trống câu hỏi ", "thông báo", MessageBoxButtons.OK);
+                MessageBox.Show("Còn để trống câu hỏi " + Check(), "thông báo", MessageBoxButtons.OK);
                 return;
             }
             //string truyvan = "exec SP_TAO_BAITHI 'AT2','001', 'AVCB',1";
@@ -352,7 +394,7 @@ namespace TN_CSDLPT
                 selectedOption = dsDapAn[i];
                 if (dapan.Equals(selectedOption))
                     correctAnswer++;
-                string query = "INSERT INTO CT_BAITHI(ID_BAITHI,CAUHOI, STT,DACHON) VALUES("+id_baithi+","+cauhoi+","+i+",'"+selectedOption+"')";
+                /*string query = "INSERT INTO CT_BAITHI(ID_BAITHI,CAUHOI, STT,DACHON) VALUES("+id_baithi+","+cauhoi+","+i+",'"+selectedOption+"')";
                 try
                 {
                     Program.myReader = Program.ExecSqlDataReader(query);
@@ -366,14 +408,37 @@ namespace TN_CSDLPT
                     MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                Program.myReader.Close();
-
+                Program.myReader.Close();*/
                 i++;
             }
             float mark =(float)( correctAnswer*10)/ dtTracNghiem.Rows.Count;
             MessageBox.Show("Số câu đúng : "+ correctAnswer+"Điểm : " + mark, "Thông báo", MessageBoxButtons.OK);
-            
+            // ghi điểm vào bảng điểm
+            string cauLenhGhiDiem = "UPDATE BAITHI SET DIEM = " + mark + "WHERE ID_BAITHI =" + id_baithi;
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(cauLenhGhiDiem);
+                if (Program.myReader == null)
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("lỗi khi ghi điểm " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Program.myReader.Close();
         }
-        
+
+        private void txtThoiGian_TextChanged(object sender, EventArgs e)
+        {
+            if(txtThoiGian.Text.Equals("00:10"))
+            {
+                timer1.Stop();
+                MessageBox.Show("Hết thời gian ","Thông báo", MessageBoxButtons.OKCancel);
+                return;
+            }
+        }
     }
 }

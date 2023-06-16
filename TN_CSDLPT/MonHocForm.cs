@@ -75,7 +75,7 @@ namespace TN_CSDLPT
             if (Program.AuthGroup == "TRUONG")
             {
                 cmbCoSo.Enabled = true;
-                labelCoSo.Enabled = true;
+                panelNhapLieu.Enabled = false;
                 this.btnTHEM.Enabled = this.btnXOA.Enabled = this.btnGHI.Enabled = this.btnHOANTAC.Enabled = false;
                 this.btnLAMMOI.Enabled = true;
                 this.panelNhapLieu.Enabled = false;
@@ -86,16 +86,10 @@ namespace TN_CSDLPT
             // Nhóm COSO có toàn quyền trên 
             else if (Program.AuthGroup == "COSO")
             {
-                labelCoSo.Enabled = false;
                 cmbCoSo.Enabled = false;
-                this.btnTHEM.Enabled = this.btnXOA.Enabled = this.btnGHI.Enabled = this.btnHOANTAC.Enabled = true;
-                this.btnLAMMOI.Enabled = true;
-                this.panelNhapLieu.Enabled = true;
-                this.btnTHOAT.Enabled = true;
+                panelNhapLieu.Enabled = true;
             }
             //Nhóm GIANG VIEN và SINHVIEN làm chứ phân quyền csdl hai nhóm này k được truy cập vào cdsl
-
-
         }
 
         private void cmbCoSo_SelectedIndexChanged(object sender, EventArgs e)
@@ -154,13 +148,14 @@ namespace TN_CSDLPT
                 //lấy vị trí hiện tại của con trỏ để tiến hành undo
 
                 vitri = bdsMONHOC.Position;
-                this.panelNhapLieu.Enabled = true;
+ 
                 kiemtraThemMoi = true;
-               
-                
+
+                gcMonHoc.Enabled = false;
                 bdsMONHOC.AddNew();
 
                 panelNhapLieu.Enabled=true;
+                txtMaMonHoc.Enabled = true;
 
                 btnTHEM.Enabled = false;
                 btnXOA.Enabled = false;
@@ -190,12 +185,12 @@ namespace TN_CSDLPT
                 txtMaMonHoc.Focus();
                 return false;
             }
-            if (Regex.IsMatch(txtMaMonHoc.Text, @"^[a-zA-Z0-9]+$") == false)
+            /*if (Regex.IsMatch(txtMaMonHoc.Text, @"^[a-zA-Z0-9]+$") == false)
             {
                 MessageBox.Show("Mã môn học chỉ có chữ cái và số", "Thông báo", MessageBoxButtons.OK);
                 txtMaMonHoc.Focus();
                 return false;
-            }
+            }*/
             if (txtMaMonHoc.Text.Length > 5)
             {
                 MessageBox.Show("Mã môn học không được quá 5 kí tự", "Thông báo", MessageBoxButtons.OK);
@@ -210,12 +205,12 @@ namespace TN_CSDLPT
                 txtTenMonHoc.Focus();
                 return false;
             }
-            if (Regex.IsMatch(txtTenMonHoc.Text, @"^[a-zA-Z0-9 ]+$") == false)// kiểm tra bao gồm khoảng trắng
+            /*if (Regex.IsMatch(txtTenMonHoc.Text, @"^[a-zA-Z0-9 ]+$") == false)// kiểm tra bao gồm khoảng trắng
             {
                 MessageBox.Show("Tên môn học chỉ có chữ cái và số và khoảng trắng", "Thông báo", MessageBoxButtons.OK);
                 txtMaMonHoc.Focus();
                 return false;
-            }
+            }*/
             if (txtTenMonHoc.Text.Length > 50)
             {
                 MessageBox.Show("Tên môn học không được quá 50 kí tự", "Thông báo", MessageBoxButtons.OK);
@@ -295,6 +290,7 @@ namespace TN_CSDLPT
                     MessageBox.Show("Ghi thành công",
                      "Thông báo", MessageBoxButtons.OK);
                    
+                    txtMaMonHoc.Enabled = true;
                     panelNhapLieu.Enabled = false;
                     kiemtraThemMoi = false;
                     btnTHEM.Enabled = true;
@@ -306,12 +302,13 @@ namespace TN_CSDLPT
                     btnLAMMOI.Enabled = true;
                     btnTHOAT.Enabled = true;
 
+
                 }
 
 
             }
             kiemtraThemMoi = false;
-            return;
+            gcMonHoc.Enabled = true;
 
 
         }
@@ -466,7 +463,9 @@ namespace TN_CSDLPT
 
             // do có chức năng hoàn tác nên không thể cho sửa khóa chính vì để lấy nó làm mốc
             panelNhapLieu.Enabled = true;
+            gcMonHoc.Enabled = false;
             txtMaMonHoc.Enabled = false;
+            kiemtraThemMoi = false;
 
             btnTHEM.Enabled = false;
             btnXOA.Enabled = false;
@@ -481,7 +480,8 @@ namespace TN_CSDLPT
         private void btnCANCEL_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             panelNhapLieu.Enabled = false;
-            if(kiemtraThemMoi == true)
+            gcMonHoc.Enabled = true;
+            if (kiemtraThemMoi == true)
             {
                 bdsMONHOC.RemoveCurrent();
             }    

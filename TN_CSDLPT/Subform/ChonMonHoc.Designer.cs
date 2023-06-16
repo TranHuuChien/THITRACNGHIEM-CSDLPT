@@ -38,9 +38,9 @@
             this.colMAMH = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTENMH = new DevExpress.XtraGrid.Columns.GridColumn();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
+            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.btnTHOAT = new System.Windows.Forms.Button();
             this.btnCHON = new System.Windows.Forms.Button();
-            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sP_LAYDANHSACH_MONHOCBindingSource)).BeginInit();
@@ -103,18 +103,22 @@
             // 
             // colMAMH
             // 
+            this.colMAMH.Caption = "MÃ MÔN HỌC";
             this.colMAMH.FieldName = "MAMH";
             this.colMAMH.MinWidth = 30;
             this.colMAMH.Name = "colMAMH";
+            this.colMAMH.OptionsColumn.AllowEdit = false;
             this.colMAMH.Visible = true;
             this.colMAMH.VisibleIndex = 0;
             this.colMAMH.Width = 112;
             // 
             // colTENMH
             // 
+            this.colTENMH.Caption = "TÊN MÔN HỌC";
             this.colTENMH.FieldName = "TENMH";
             this.colTENMH.MinWidth = 30;
             this.colTENMH.Name = "colTENMH";
+            this.colTENMH.OptionsColumn.AllowEdit = false;
             this.colTENMH.Visible = true;
             this.colTENMH.VisibleIndex = 1;
             this.colTENMH.Width = 112;
@@ -128,26 +132,6 @@
             this.panelControl1.Size = new System.Drawing.Size(794, 105);
             this.panelControl1.TabIndex = 2;
             // 
-            // btnTHOAT
-            // 
-            this.btnTHOAT.Location = new System.Drawing.Point(448, 498);
-            this.btnTHOAT.Name = "btnTHOAT";
-            this.btnTHOAT.Size = new System.Drawing.Size(143, 37);
-            this.btnTHOAT.TabIndex = 2;
-            this.btnTHOAT.Text = "THOÁT";
-            this.btnTHOAT.UseVisualStyleBackColor = true;
-            this.btnTHOAT.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // btnCHON
-            // 
-            this.btnCHON.Location = new System.Drawing.Point(183, 498);
-            this.btnCHON.Name = "btnCHON";
-            this.btnCHON.Size = new System.Drawing.Size(135, 38);
-            this.btnCHON.TabIndex = 1;
-            this.btnCHON.Text = "CHỌN";
-            this.btnCHON.UseVisualStyleBackColor = true;
-            this.btnCHON.Click += new System.EventHandler(this.btnCHON_Click);
-            // 
             // labelControl1
             // 
             this.labelControl1.Appearance.Font = new System.Drawing.Font("Tahoma", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -157,6 +141,26 @@
             this.labelControl1.Size = new System.Drawing.Size(445, 53);
             this.labelControl1.TabIndex = 0;
             this.labelControl1.Text = "DANH SÁCH MÔN HỌC";
+            // 
+            // btnTHOAT
+            // 
+            this.btnTHOAT.Location = new System.Drawing.Point(448, 481);
+            this.btnTHOAT.Name = "btnTHOAT";
+            this.btnTHOAT.Size = new System.Drawing.Size(143, 37);
+            this.btnTHOAT.TabIndex = 2;
+            this.btnTHOAT.Text = "THOÁT";
+            this.btnTHOAT.UseVisualStyleBackColor = true;
+            this.btnTHOAT.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // btnCHON
+            // 
+            this.btnCHON.Location = new System.Drawing.Point(183, 481);
+            this.btnCHON.Name = "btnCHON";
+            this.btnCHON.Size = new System.Drawing.Size(135, 38);
+            this.btnCHON.TabIndex = 1;
+            this.btnCHON.Text = "CHỌN";
+            this.btnCHON.UseVisualStyleBackColor = true;
+            this.btnCHON.Click += new System.EventHandler(this.btnCHON_Click);
             // 
             // panel1
             // 
@@ -171,7 +175,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(794, 618);
+            this.ClientSize = new System.Drawing.Size(794, 553);
             this.Controls.Add(this.btnTHOAT);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnCHON);

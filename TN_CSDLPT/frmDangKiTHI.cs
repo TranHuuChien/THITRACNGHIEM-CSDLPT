@@ -1,4 +1,6 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.CodeParser;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.XtraEditors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,10 +53,28 @@ namespace TN_CSDLPT
             cbbTrinhDo.DataSource = list;
             cbbTrinhDo.SelectedIndex = 0;
 
-            if(Program.AuthGroup == "TRUONG")
+            if (Program.AuthGroup == "TRUONG")
             {
                 cmbCoSo.Enabled = true;
-            }    
+                pcNhapLieu.Enabled = false;
+
+                btnTHEM.Enabled = false;
+                btnXOA.Enabled = false;
+                btnGHI.Enabled = false;
+                btnCancel.Enabled = false;
+                btnTHOAT.Enabled = true;
+                btnHoanTac.Enabled = false;
+                btnSua.Enabled = false;
+
+
+            }
+            // Nhóm COSO có toàn quyền trên 
+            else if (Program.AuthGroup == "COSO")
+            {
+                cmbCoSo.Enabled = false;
+               
+            }
+            pcNhapLieu.Enabled = false;
         }
 
         private void cmbCoSo_SelectedIndexChanged(object sender, EventArgs e)
@@ -117,6 +137,7 @@ namespace TN_CSDLPT
                 bdsGIAOVIEN_DANGKI.AddNew();
                 kiemtraTHEM = true;
                 pcNhapLieu.Enabled = true;
+                gcGiaoVien_DangKi.Enabled = false;
 
                 btnTHEM.Enabled = false;
                 btnXOA.Enabled = false;
@@ -153,6 +174,7 @@ namespace TN_CSDLPT
                 return false;
             }
 
+            
 
             if (dateNgayThi.Text.Length == 0)
             {
@@ -177,7 +199,7 @@ namespace TN_CSDLPT
                 MessageBox.Show("Số câu thi không được để trống !", "Thông báo", MessageBoxButtons.OK);
                 return false;
             }
-            if(int.Parse(txtSoCauTHI.Text) <= 10 || int.Parse(txtSoCauTHI.Text) >= 100)
+            if(int.Parse(txtSoCauTHI.Text.Trim()) <= 10 || int.Parse(txtSoCauTHI.Text.Trim()) >= 100)
             {
                 MessageBox.Show("Số câu thi nằm trong khoảng 10 đến 100 câu  !", "Thông báo", MessageBoxButtons.OK);
                 return false;
@@ -217,40 +239,54 @@ namespace TN_CSDLPT
                 return;
             }
 
-            //kiểm tra xem có bị trùng đăng kí thi
 
+            if(kiemtraTHEM == true)
+            {
+                //kiểm tra xem có bị trùng đăng kí thi
+                string truyvankt = "DECLARE @kq int EXEC @kq = SP_KIEM_TRA_DANG_KI_THI '" + txtMaLop.Text.Trim() + "','"
+                + txtMaMH.Text.Trim() + "'," + spinLAN.Text.Trim() + "  SELECT @kq";
+
+                Program.myReader = Program.ExecSqlDataReader(truyvankt);
+                Program.myReader.Read();
+                int KQ_ktdk = int.Parse(Program.myReader.GetValue(0).ToString());
+                Program.myReader.Close();
+                // nếu kết quả kiểm tra là 0 thì oke
+                if (KQ_ktdk == 1)
+                {
+                    MessageBox.Show("Đã tồn tại đăng kí thi, vui lòng thử lại", "Thông báo", MessageBoxButtons.OK);
+                    return;
+                }
+
+            }
 
             // kiểm tra số câu thi có bị thiếu trong bộ đề không
-            //string truyvan = "SELECT COUNT(CAUHOI) FROM BODE WHERE MAGV = '" + txtMaGV.Text + "'";
-            //try
-            //{
-            //    Program.myReader = Program.ExecSqlDataReader(truyvan);
-            //    if (Program.myReader == null)
-            //    {
-            //        return;
-            //    }
+            //string truyvan1 = "EXEC SP_KIEM_TRA_DU_CAU_THI 'TH04', 'A','CSDL',50";
+            string truyvan = "EXEC SP_KIEM_TRA_DU_CAU_THI '" + txtMaLop.Text + "','" + cbbTrinhDo.Text + "','" + txtMaMH.Text + "'," + txtSoCauTHI.Text;
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(truyvan);
+               if (Program.myReader == null)
+               {
+                   return;
+               }
 
-            //}
-            //catch(Exception ex)
-            //{
-            //    MessageBox.Show("Thực thi database thất bại " + ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-
-            //}
-            //int socauhoi = int.Parse(Program.myReader.GetValue(0).ToString());
-            //if(socauhoi < int.Parse(txtSoCauTHI.Text))
-            //{
-            //    string socauthieu = string.Concat(int.Parse(txtSoCauTHI.Text) - socauhoi);
-            //    MessageBox.Show("Số câu thi yêu cầu vượt quá số câu hỏi trong bộ đề, thiếu " + socauthieu, "THÔNG BÁO", MessageBoxButtons.OK);
-            //    return;
-            //}    
-
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show( ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Program.myReader.Close();
+           
             DataRowView drv = (DataRowView)bdsGIAOVIEN_DANGKI[bdsGIAOVIEN_DANGKI.Position];
-            string trinhdo = drv["TRINHDO"].ToString();
-            string ngaythi = drv["NGAYTHI"].ToString();
-            string solan = drv["LAN"].ToString();
-            string socauthi = drv["SOCAUTHI"].ToString();
-            string thoigian = drv["THOIGIAN"].ToString();
+            string MAGV = drv["MAGV"].ToString().Trim();
+            string MAMH = drv["MAMH"].ToString().Trim();
+            string MALOP = drv["MALOP"].ToString().Trim();
+            string TRINHDO = drv["TRINHDO"].ToString().Trim();
+            string NGAYTHI = drv["NGAYTHI"].ToString().Trim();
+            string LAN = drv["LAN"].ToString().Trim();
+            string SOCAUTHI = drv["SOCAUTHI"].ToString().Trim();
+            string THOIGIAN = drv["THOIGIAN"].ToString().Trim();
 
             DialogResult dr = MessageBox.Show("Bạn có chắc ghi dữ liệu vào cơ sở dữ liệu ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if(dr == DialogResult.OK)
@@ -258,14 +294,15 @@ namespace TN_CSDLPT
                 // Trước khi nhấn nút ghi là thêm
                 if(kiemtraTHEM == true)
                 {
-                    hoantac = "delete from GIAOVIEN_DANGKY WHERE MAGV = '" + txtMaGV.Text.Trim() + "' AND MALOP = '" + txtMaLop.Text.Trim() + "' AND MAMH = '" + txtMaMH.Text.Trim() + "'" ;
+                    hoantac = "delete FROM GIAOVIEN_DANGKY WHERE LAN = "+ LAN + " AND MALOP = '" + MALOP + "' AND MAMH = '" + MAMH + "'" ;
                 }
                 //trước khi nhấn nút ghi là sửa
                 else
                 {
                     
-                    hoantac = "UPDATE GIAOVIEN_DANGKY SET TRINHDO = '" + trinhdo + "', NGAYTHI = '" + ngaythi
-                    + "', LAN = '" + solan + "', SOCAUTHI = '" + socauthi + "', THOIGIAN = '" + thoigian + "'";
+                    hoantac = "UPDATE GIAOVIEN_DANGKY SET TRINHDO = '" + TRINHDO + "', NGAYTHI = '" + NGAYTHI
+                    + "', MAGV = '" + MAGV + "', SOCAUTHI = " + SOCAUTHI + ", THOIGIAN = " + THOIGIAN + 
+                    " WHERE LAN = "+ LAN + " AND MALOP = '" + MALOP + "' AND MAMH = '" + MAMH + "'" ;
                 }
 
                 undo.Push(hoantac);
@@ -282,7 +319,11 @@ namespace TN_CSDLPT
                 btnSua.Enabled = true;
 
                 kiemtraTHEM = false;
+                txtMaGV.Enabled = true;
+                txtMaMH.Enabled = true;
+                txtMaLop.Enabled = true;
                 pcNhapLieu.Enabled = false;
+                gcGiaoVien_DangKi.Enabled = true;
             }
             
 
@@ -290,13 +331,52 @@ namespace TN_CSDLPT
 
         private void btnXOA_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if(bdsGIAOVIEN_DANGKI.Count == 0)
+            DataRowView drv = (DataRowView)bdsGIAOVIEN_DANGKI[bdsGIAOVIEN_DANGKI.Position];
+            string MAGV = drv["MAGV"].ToString().Trim();
+            string MAMH = drv["MAMH"].ToString().Trim();
+            string MALOP = drv["MALOP"].ToString().Trim();
+            string TRINHDO = drv["TRINHDO"].ToString().Trim();
+            string NGAYTHI = drv["NGAYTHI"].ToString().Trim();
+            string LAN = drv["LAN"].ToString().Trim();
+            string SOCAUTHI = drv["SOCAUTHI"].ToString().Trim();
+            string THOIGIAN = drv["THOIGIAN"].ToString().Trim();
+
+            if (bdsGIAOVIEN_DANGKI.Count == 0)
             {
                 MessageBox.Show("Không tồn tại sinh viên nào", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
+            // kiểm tra đăng kí thi đã có bài thi hay nói cách khác là đa
+            string KTXOA = "DECLARE @KQ INT EXEC @KQ =  SP_KIEM_TRA_DANG_KI_THI_DA_THI_CHUA '"+ MALOP +"','"+ MAMH +"'," + LAN +"  SELECT @KQ";
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(KTXOA);
+                if (Program.myReader == null)
+                {
+                    return;
+                }
 
-            string caulenhhoantac = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Program.myReader.Read();
+            int KQ = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+
+            if(KQ == 1)
+            {
+                MessageBox.Show("Đăng kí thi đã được thi rồi ,vui lòng không được xóa", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }    
+
+           
+
+            string caulenhhoantac = "INSERT INTO GIAOVIEN_DANGKY(MAGV,MAMH,MALOP,TRINHDO,NGAYTHI,LAN, SOCAUTHI, THOIGIAN) VALUES('" +
+            MAGV + "','" + MAMH + "','" + MALOP + "','" + TRINHDO + "','"+ NGAYTHI + "'," +
+            LAN + "," + SOCAUTHI + "," + THOIGIAN + ")";
             DialogResult dr = MessageBox.Show("Bạn có chắc xóa không ? ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if (dr == DialogResult.OK)
             {
@@ -362,7 +442,14 @@ namespace TN_CSDLPT
         private void btnSua_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             pcNhapLieu.Enabled = true;
+            gcGiaoVien_DangKi.Enabled = false;
+
+            txtMaGV.Enabled = false; 
+            txtMaMH.Enabled = false;
+            txtMaLop.Enabled = false;
+
             kiemtraTHEM = false;
+
             btnTHEM.Enabled = false;
             btnXOA.Enabled = false;
             btnGHI.Enabled = true;
@@ -374,7 +461,13 @@ namespace TN_CSDLPT
 
         private void btnCancel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            
+            txtMaGV.Enabled = true;
+            txtMaMH.Enabled = true;
+            txtMaLop.Enabled = true;
             pcNhapLieu.Enabled = false;
+            gcGiaoVien_DangKi.Enabled = true;
+
             btnTHEM.Enabled = true;
             btnXOA.Enabled = true;
             btnGHI.Enabled = false;
@@ -400,16 +493,17 @@ namespace TN_CSDLPT
             bdsGIAOVIEN_DANGKI.CancelEdit();
             String caulenhHoanTac = undo.Pop().ToString();
             int n = Program.ExecSqlNonQuery(caulenhHoanTac);
-            //Console.WriteLine(caulenhHoanTac + n.ToString());
             try
             {
                 this.gIAOVIEN_DANGKYTableAdapter.Connection.ConnectionString = Program.connstr;
-                this.gIAOVIEN_DANGKYTableAdapter.Fill(this.dataSet.GIAOVIEN_DANGKY);
+                this.gIAOVIEN_DANGKYTableAdapter.Fill(dataSet.GIAOVIEN_DANGKY);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                MessageBox.Show(ex.Message, "Thông báo làm mới", MessageBoxButtons.OK);
+
             }
+            //Console.WriteLine(caulenhHoanTac + n.ToString());
+           
         }
 
         private void tHOIGIANLabel_Click(object sender, EventArgs e)

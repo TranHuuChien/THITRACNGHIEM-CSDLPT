@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraBars;
+﻿using DevExpress.Pdf.Native;
+using DevExpress.XtraBars;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -64,48 +65,91 @@ namespace TN_CSDLPT
             if(Program.AuthGroup == "TRUONG")
             {
                 rib_HeThong.Visible = rib_NghiepVu.Visible = rib_BaoCao.Visible = true;
-                this.btn_TaoTaiKhoan.Enabled = true;
-                this.btnMONHOC.Enabled = true;
-                this.btnKhoa_Lop.Enabled = true;
-                this.btnSinhVien.Enabled = true;
-                this.btnDANGKI_THI.Enabled = true;
-                
+                btn_TaoTaiKhoan.Enabled = true;
+                btnChangePassword.Enabled = true;
+
+                btnMONHOC.Enabled = true;
+                btnKhoa_Lop.Enabled = true;
+                btnSinhVien.Enabled = true;
+                btnDANGKI_THI.Enabled = true;
+                btnGiangVien.Enabled = true;
+                btnBODE.Enabled = true;
+
+                btnXemDiem.Enabled = true;
+                btnDSDK.Enabled = true;
+
+                btnXemLaiBaiThi.Enabled = false;
+                btnTHI.Enabled = false;
             }
             
             else if(Program.AuthGroup == "COSO")
             {
                 rib_HeThong.Visible = rib_NghiepVu.Visible = rib_BaoCao.Visible = true;
-                this.btn_TaoTaiKhoan.Enabled = true;
-                this.btnMONHOC.Enabled = true;
-                this.btnKhoa_Lop.Enabled = true;
-                this.btnSinhVien.Enabled = true;
-                this.btnBODE.Enabled = false;
-                this.btnDANGKI_THI.Enabled = true;
+
+                btn_TaoTaiKhoan.Enabled = true;
+                btnChangePassword.Enabled = true;
+
+                btnMONHOC.Enabled = true;
+                btnKhoa_Lop.Enabled = true;
+                btnSinhVien.Enabled = true;
+                btnDANGKI_THI.Enabled = true;
+                btnGiangVien.Enabled = true;
+                btnBODE.Enabled = true;
+
+                btnXemDiem.Enabled = true;
+                btnDSDK.Enabled = true;
+
+                btnXemLaiBaiThi.Enabled = false;
+                btnTHI.Enabled = false;
+
             }    
 
             else if(Program.AuthGroup == "GIANGVIEN")
             {
+
+                rib_HeThong.Visible = rib_NghiepVu.Visible = true;
                 btn_TaoTaiKhoan.Enabled = false;
+                btnChangePassword.Enabled = true;
 
-                rib_HeThong.Visible = rib_NghiepVu.Visible = true;
-                
-                btnTHI.Enabled = true;// vì trong phân quyền yêu cầu GV được thi thử nhưng không ghi điểm
-                btnDANGKI_THI.Enabled = false;
-                btnBODE.Enabled=true;
-            }
-            else
-            {
-                rib_HeThong.Visible = rib_NghiepVu.Visible = true;
+                btnMONHOC.Enabled = false;
+                btnKhoa_Lop.Enabled = false;
+                btnSinhVien.Enabled = false;
+                btnDANGKI_THI.Enabled = true;
+                btnGiangVien.Enabled = false;
+                btnBODE.Enabled = true;
                 btnTHI.Enabled = true;
-                btnXemLaiBai.Enabled = true;
+
+
+                btnXemDiem.Enabled = false;
+                btnDSDK.Enabled = false;
+                btnXemLaiBaiThi.Enabled = false;
+
+
+            }
+            else 
+            {
+                
+                rib_HeThong.Visible = rib_NghiepVu.Visible = rib_BaoCao.Visible = true;
+
+                btn_TaoTaiKhoan.Enabled = false;
+                btnChangePassword.Enabled = true;
+
+                btnMONHOC.Enabled = false;
+                btnKhoa_Lop.Enabled = false;
+                btnSinhVien.Enabled = false;
+                btnDANGKI_THI.Enabled = false;
+                btnGiangVien.Enabled = false;
+                btnBODE.Enabled = false;
+                btnTHI.Enabled = true;
+
+
+                btnXemDiem.Enabled = false;
+                btnDSDK.Enabled = false;
+                btnXemLaiBaiThi.Enabled = true;
             }
 
 
-            
-            
-
-
-            btn_TaoTaiKhoan.Enabled = btn_DangXuat.Enabled = true;
+            btn_DangXuat.Enabled = true;
             btn_DangNhap.Enabled = false;
         }
 
@@ -115,9 +159,21 @@ namespace TN_CSDLPT
             {
                 f.Dispose();// giai phong cac form con  khoi bo nho 
             }
-            Program.userName = "";
-            Program.AuthHoten = string.Empty;
-            Program.AuthGroup = string.Empty;
+            btn_DangNhap.Enabled = true;
+            rib_NghiepVu.Visible = rib_BaoCao.Visible = false;
+            btn_DangXuat.Enabled = btn_TaoTaiKhoan.Enabled = false;
+            btnChangePassword.Enabled = false;
+            Program.AuthLogin = "";
+            Program.AuthHoten = "";
+            Program.AuthGroup = "";
+
+
+            foreach (Form f in this.MdiChildren)
+                f.Dispose();
+
+            MA.Text = "MÃ : " + Program.AuthLogin;
+            HOVATEN.Text = "Họ Tên : " + Program.AuthHoten;
+            NHOM.Text = "NHÓM : " + Program.AuthGroup;
         }
         private void btn_TaoTaiKhoan_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -137,26 +193,6 @@ namespace TN_CSDLPT
         private void btn_DangXuat_ItemClick(object sender, ItemClickEventArgs e)
         {
             logout();
-            this.btn_DangNhap.Enabled = true;
-            rib_NghiepVu.Visible = rib_BaoCao.Visible = false;
-            this.btn_DangXuat.Enabled = this.btn_TaoTaiKhoan.Enabled = false;
-            Program.AuthLogin = "";
-            Program.AuthHoten = "";
-            Program.AuthGroup = "";
-
-            if (Program.AuthGroup.Equals("TRUONG") || Program.AuthGroup.Equals("COSO"))
-            {
-                btn_TaoTaiKhoan.Enabled = false;
-            }
-
-            foreach (Form f in this.MdiChildren)
-                f.Dispose();
-
-            MA.Text = "MÃ : " + Program.AuthLogin;
-            HOVATEN.Text = "Họ Tên : " + Program.AuthHoten;
-            NHOM.Text = "NHÓM : " + Program.AuthGroup;
-
-
         }
         /*private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -212,16 +248,16 @@ namespace TN_CSDLPT
 
         private void btnKhoa_Lop_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Form f = this.CheckExists(typeof(frmKHOA_LOP));
+            Form f = this.CheckExists(typeof(frmKhoaAndLop));
             if (f != null)
             {
                 f.Activate();
             }
             else
             {
-                frmKHOA_LOP frmKHOA_LOp = new frmKHOA_LOP();
+                frmKhoaAndLop frmKHOA_LOp = new frmKhoaAndLop();
                
-                //frmKHOA_LOp.MdiParent = this;
+                frmKHOA_LOp.MdiParent = this;
                 frmKHOA_LOp.Show();
             }
         }
@@ -243,7 +279,7 @@ namespace TN_CSDLPT
 
         private void btnBODE_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Form f = this.CheckExists(typeof(frmBoDe));
+            Form f = this.CheckExists(typeof(frmThiThu));
             if (f != null)
             {
                 f.Activate();
@@ -295,9 +331,38 @@ namespace TN_CSDLPT
 
         private void btnXemLaiBai_ItemClick(object sender, ItemClickEventArgs e)
         {
-           frmXemLaiBAITHI baithi = new frmXemLaiBAITHI();
+           frmThiThu baithi = new frmThiThu();
             baithi.MdiParent = this;
             baithi.Show();
+        }
+
+        private void btnChangePassword_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            frmChangePassword changePassword = new frmChangePassword();
+            changePassword.MdiParent = this;
+            changePassword.Show();
+        }
+
+        private void btnXemLaiBaiThi_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            FrptXemLaiBaiThi checkIn = new FrptXemLaiBaiThi();
+            checkIn.MdiParent = this;
+            checkIn.Show();
+        }
+
+        private void btnXemDiem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            FrptXemDiemLop report = new FrptXemDiemLop();
+            report.MdiParent = this;
+            report.Show();
+
+        }
+
+        private void btnDSDK_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            FrptDanhSachDangKiTHI report = new FrptDanhSachDangKiTHI();
+            report.MdiParent = this;
+            report.Show();
         }
     }
 }
